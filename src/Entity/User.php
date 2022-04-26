@@ -36,11 +36,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $active;
 
     #[ORM\ManyToOne(targetEntity: Employ::class, inversedBy: 'users')]
-    private $id_employ;
+    private $employ;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: WorkTime::class)]
+    private $workTimes;
 
     public function __construct()
     {
-        $this->id_employ = new ArrayCollection();
+        $this->workTimes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -149,14 +152,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getIdEmploy(): ?Employ
+    public function getEmploy(): ?Employ
     {
-        return $this->id_employ;
+        return $this->employ;
     }
 
-    public function setIdEmploy(?Employ $id_employ): self
+    public function setEmploy(?Employ $employ): self
     {
-        $this->id_employ = $id_employ;
+        $this->employ = $employ;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, WorkTime>
+     */
+    public function getWorkTimes(): Collection
+    {
+        return $this->workTimes;
+    }
+
+    public function addWorkTime(WorkTime $workTime): self
+    {
+        if (!$this->workTimes->contains($workTime)) {
+            $this->workTimes[] = $workTime;
+            $workTime->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWorkTime(WorkTime $workTime): self
+    {
+        if ($this->workTimes->removeElement($workTime)) {
+            // set the owning side to null (unless already changed)
+            if ($workTime->getUser() === $this) {
+                $workTime->setUser(null);
+            }
+        }
 
         return $this;
     }

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Czas pracy{% endblock %}
+
+{% block body %}
+
+<h1>Dodaj czas pracy</h1>
+{% form_theme workTimeForm 'bootstrap_4_layout.html.twig' %}
+{{form_start(workTimeForm)}}
+    {{form_row(workTimeForm.user)}}
+    {{form_row(workTimeForm.project)}}
+    {{form_row(workTimeForm.work_date)}}
+    {{form_row(workTimeForm.work_time)}}
+    <button type="submit" class="btn btn-primary mt-3">Dodaj</button>
+{{form_end(workTimeForm)}}
+
+      <div class="table-responsive">
+        <table class="table table-striped table-sm" data-toggle="table" data-search="true" data-show-columns="true">
+          <thead>
+            <tr>
+              <th scope="col">Projekt</th>
+              <th scope="col">Imię</th>
+              <th scope="col">Nazwisko</th>
+              <th scope="col">Data</th>
+              <th scope="col">Ilość godzin</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for rowDefaultData in defaultData %}
+          <tr>
+              <td>{{rowDefaultData.getProject.getName}}</td>
+              <td>{{rowDefaultData.getUser.getFirstName}}</td>
+              <td>{{rowDefaultData.getUser.getLastName}}</td>
+              <td>{{rowDefaultData.getWorkDate | date('Y-m-d')}}</td>
+              <td>{{rowDefaultData.getWorkTime | date('H:i')}}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+{% endblock %}

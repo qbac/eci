@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\EmployRepository;
+use App\Repository\ProjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: EmployRepository::class)]
-class Employ
+#[ORM\Entity(repositoryClass: ProjectRepository::class)]
+class Project
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,15 +18,20 @@ class Employ
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    #[ORM\OneToMany(mappedBy: 'employ', targetEntity: User::class)]
-    private $users;
+    #[ORM\Column(type: 'date')]
+    private $date_start;
 
-    #[ORM\OneToMany(mappedBy: 'employ', targetEntity: WorkTime::class)]
+    #[ORM\Column(type: 'date')]
+    private $date_end;
+
+    #[ORM\Column(type: 'boolean')]
+    private $active;
+
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: WorkTime::class)]
     private $workTimes;
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
         $this->workTimes = new ArrayCollection();
     }
 
@@ -47,32 +52,38 @@ class Employ
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
+    public function getDateStart(): ?\DateTimeInterface
     {
-        return $this->users;
+        return $this->date_start;
     }
 
-    public function addUser(User $user): self
+    public function setDateStart(\DateTimeInterface $date_start): self
     {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-            $user->setEmploy($this);
-        }
+        $this->date_start = $date_start;
 
         return $this;
     }
 
-    public function removeUser(User $user): self
+    public function getDateEnd(): ?\DateTimeInterface
     {
-        if ($this->users->removeElement($user)) {
-            // set the owning side to null (unless already changed)
-            if ($user->getEmploy() === $this) {
-                $user->setEmploy(null);
-            }
-        }
+        return $this->date_end;
+    }
+
+    public function setDateEnd(\DateTimeInterface $date_end): self
+    {
+        $this->date_end = $date_end;
+
+        return $this;
+    }
+
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
 
         return $this;
     }
@@ -89,7 +100,7 @@ class Employ
     {
         if (!$this->workTimes->contains($workTime)) {
             $this->workTimes[] = $workTime;
-            $workTime->setEmploy($this);
+            $workTime->setProject($this);
         }
 
         return $this;
@@ -99,8 +110,8 @@ class Employ
     {
         if ($this->workTimes->removeElement($workTime)) {
             // set the owning side to null (unless already changed)
-            if ($workTime->getEmploy() === $this) {
-                $workTime->setEmploy(null);
+            if ($workTime->getProject() === $this) {
+                $workTime->setProject(null);
             }
         }
 
