@@ -42,6 +42,11 @@ class WorkTimeController extends AbstractController
                 $em->flush();
             }
         }
+        if ($form->get('work_date')->getData())
+        {
+            $defaultDate = $form->get('work_date')->getData();
+        }
+        
         $defaultDateData = $em->getRepository(WorkTime::class)->findBy(['work_date' => $defaultDate],['project' => 'ASC']);
 
         return $this->render('work_time/index.html.twig', [
