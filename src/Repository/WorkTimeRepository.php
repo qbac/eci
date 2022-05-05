@@ -45,9 +45,9 @@ class WorkTimeRepository extends ServiceEntityRepository
         }
     }
 /**
- * @return WorkTimeSumUser[] Returns an array
+ * @return WorkTimeSumUser [sum_work_time, project_id, p.name] Returns an array - employee working time in a given date range, summed up according to projects.
  */
-    public function getUserdataWorkTime(int $idUser, $dateStart, $dateEnd): array
+    public function getUserDataWorkTimeSum(int $idUser, $dateStart, $dateEnd): array
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time, wt.project_id, p.name 
@@ -60,6 +60,25 @@ class WorkTimeRepository extends ServiceEntityRepository
         // returns an array of arrays (i.e. a raw data set)
         return $resultSet->fetchAllAssociative();
     }
+
+/**
+ * @return WorkTimeUser [work_date, work_time, project_id, name] Return an array - employee working time in a given date range.
+ */
+    public function getUserDataWorkTime (int $idUser, $dateStart, $dateEnd): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time, wt.project_id, p.name 
+        FROM work_time wt 
+        LEFT JOIN project p ON (wt.project_id = p.id)
+        WHERE wt.user_id= :idUser AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd
+        ORDER BY wt.work_date;";
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['idUser' => $idUser, 'dateStart'=> $dateStart, 'dateEnd' => $dateEnd]);
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
+
+
     // /**
     //  * @return WorkTime[] Returns an array of WorkTime objects
     //  */
