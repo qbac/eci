@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProjectsController!{% endblock %}
+
+{% block body %}
+<h1>{{ controller_name }}</h1>
+
+{% form_theme addProjectForm 'bootstrap_4_layout.html.twig' %}
+{{form_start(addProjectForm)}}
+    {{form_row(addProjectForm.name)}}
+    {{form_row(addProjectForm.date_start)}}
+    {{form_row(addProjectForm.date_end)}}
+    {{form_row(addProjectForm.active, {'attr' : {'checked' : 'checked'}})}}
+    <button type="submit" class="btn btn-primary mt-3">Dodaj</button>
+{{form_end(addProjectForm)}}
+
+{% endblock %}

@@ -44,7 +44,22 @@ class WorkTimeRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-
+/**
+ * @return WorkTimeSumUser[] Returns an array
+ */
+    public function getUserdataWorkTime(int $idUser, $dateStart, $dateEnd): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time, wt.project_id, p.name 
+             FROM work_time wt 
+             LEFT JOIN project p ON (wt.project_id = p.id)
+             WHERE wt.user_id= :idUser AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd
+             GROUP BY wt.project_id, p.name";
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['idUser' => $idUser, 'dateStart'=> $dateStart, 'dateEnd' => $dateEnd]);
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
     // /**
     //  * @return WorkTime[] Returns an array of WorkTime objects
     //  */

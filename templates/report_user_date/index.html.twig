@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ controller_name }}{% endblock %}
+
+{% block body %}
+<h1>Raport - czas pracy pracownika</h1>
+{% form_theme reportUserDateForm 'bootstrap_4_layout.html.twig' %}
+{{form_start(reportUserDateForm)}}
+    {{form_row(reportUserDateForm.user)}}
+    {{form_row(reportUserDateForm.work_date_start)}}
+    {{form_row(reportUserDateForm.work_date_end)}}
+    <button type="submit" class="btn btn-primary mt-3">Pokaż</button>
+{{form_end(reportUserDateForm)}}
+
+<div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Projekt</th>
+              <th scope="col">Suma przepracowanych godzin</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for rowResult in resultReport %}
+          <tr>
+              <td>{{rowResult.name}}</td>
+              <td>{{rowResult.sum_work_time}}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+{% endblock %}

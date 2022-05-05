@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Project;
 use App\Entity\WorkTime;
 use App\Entity\User;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
@@ -42,7 +43,11 @@ class WorkTimeType extends AbstractType
                 'label' => 'Projekt',
                 'class' => Project::class,
                 'choice_label' => 'name',
-                'choice_value' => 'id'
+                'choice_value' => 'id',
+                'query_builder' => function(EntityRepository $repo) {
+                    $builder = $repo->createQueryBuilder('project');
+                    return $builder->where('project.active = 1');
+                },
             ])
         ;
 
