@@ -101,7 +101,7 @@ public function getProjectDataWorkTimeSum(int $idProject, $dateStart, $dateEnd):
 public function getProjectDataWorkTime(int $idProject, $dateStart, $dateEnd): array
 {
     $conn = $this->getEntityManager()->getConnection();
-    $sql = "SELECT wt.work_date, wt.work_time, wt.project_id, u.first_name, u.last_name
+    $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time, wt.project_id, u.first_name, u.last_name
     FROM work_time wt
     LEFT JOIN user u ON (wt.user_id = u.id)
     WHERE wt.project_id= :idProject AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd
