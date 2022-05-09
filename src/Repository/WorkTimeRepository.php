@@ -96,7 +96,7 @@ public function getProjectDataWorkTimeSum(int $idProject, $dateStart, $dateEnd):
 }
 
 /**
- * @return WorkTimeProject [sum_work_time, project_id, p.name] Returns an array - employee working time in a given date range, summed up according to projects.
+ * @return WorkTimeProject [sum_work_time, project_id, first_name, last_name] Returns an array - employee working time in a given date range, summed up according to projects.
  */
 public function getProjectDataWorkTime(int $idProject, $dateStart, $dateEnd): array
 {
@@ -108,6 +108,40 @@ public function getProjectDataWorkTime(int $idProject, $dateStart, $dateEnd): ar
     ORDER BY wt.work_date";
     $stmt = $conn->prepare($sql);
     $resultSet = $stmt->executeQuery(['idProject' => $idProject, 'dateStart'=> $dateStart, 'dateEnd' => $dateEnd]);
+    // returns an array of arrays (i.e. a raw data set)
+    return $resultSet->fetchAllAssociative();
+}
+
+/**
+ * @return WorkTimeEmploy [sum_work_time, user_id, first_name, last_name] Returns an array - employee working time in a given date range, summed up according to projects.
+ */
+public function getEmployDataWorkTimeSum(int $idEmploy, $dateStart, $dateEnd): array
+{
+    $conn = $this->getEntityManager()->getConnection();
+    $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time, wt.user_id, u.first_name, u.last_name
+    FROM work_time wt
+    LEFT JOIN user u ON (wt.user_id = u.id)
+    WHERE wt.employ_id= :idEmploy AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd
+    GROUP BY wt.user_id";
+    $stmt = $conn->prepare($sql);
+    $resultSet = $stmt->executeQuery(['idEmploy' => $idEmploy, 'dateStart'=> $dateStart, 'dateEnd' => $dateEnd]);
+    // returns an array of arrays (i.e. a raw data set)
+    return $resultSet->fetchAllAssociative();
+}
+
+/**
+ * @return WorkTimeEmploy [work_date, sum_work_time, project_id, name] Returns an array - employee working time in a given date range, summed up according to projects.
+ */
+public function getEmployDataWorkTime(int $idEmploy, $dateStart, $dateEnd): array
+{
+    $conn = $this->getEntityManager()->getConnection();
+    $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time, wt.project_id, p.name
+    FROM work_time wt
+    LEFT JOIN project p ON (wt.project_id = p.id)
+    WHERE wt.employ_id= :idEmploy AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd
+    ORDER BY wt.work_date";
+    $stmt = $conn->prepare($sql);
+    $resultSet = $stmt->executeQuery(['idEmploy' => $idEmploy, 'dateStart'=> $dateStart, 'dateEnd' => $dateEnd]);
     // returns an array of arrays (i.e. a raw data set)
     return $resultSet->fetchAllAssociative();
 }
