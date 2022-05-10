@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{controller_name}}{% endblock %}
+
+{% block body %}
+<h1>{{ controller_name }}</h1>
+
+{% form_theme editUserForm 'bootstrap_4_layout.html.twig' %}
+{{form_start(editUserForm)}}
+    {{form_row(editUserForm.first_name)}}
+    {{form_row(editUserForm.last_name)}}
+    {{form_row(editUserForm.email)}}
+    {{form_row(editUserForm.plainPassword)}}
+    {{form_row(editUserForm.employ)}}
+    {{form_row(editUserForm.active)}}
+    <button type="submit" class="btn btn-primary mt-3">Popraw</button>
+{{form_end(editUserForm)}}
+
+{% endblock %}

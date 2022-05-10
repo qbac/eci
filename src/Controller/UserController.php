@@ -3,6 +3,8 @@
 namespace App\Controller;
 use App\Entity\User;
 use App\Form\AddWorkerType;
+use App\Form\UserEditType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -51,6 +53,23 @@ class UserController extends AbstractController
         return $this->render('user/addWorker.html.twig', [
             'controller_name' => 'Dodaj nowego pracownika',
             'addWorkerForm' => $form->createView()
+        ]);
+    }
+
+    #[Route('/user/edit/{id}', name: 'app_user_edit')]
+    public function editUser(User $user, Request $request, EntityManagerInterface $em)
+    {
+        $form = $this->createForm(UserEditType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($user);
+            $em->flush();
+            $this->addFlash('success', 'Poprawiono Dane użytkownika');
+            return $this->redirectToRoute('app_user');
+        }
+        return $this->render('user/edit.html.twig', [
+            'controller_name' => 'Edytuj Użytkownika',
+            'editUserForm' => $form->createView()
         ]);
     }
 

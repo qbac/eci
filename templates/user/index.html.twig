@@ -29,7 +29,7 @@
               <td>{{listUser.LastName}}</td>
               <td>{{listUser.Employ.name}}</td>
               <td>
-              <a class="btn btn-primary mt-3" href={{path("app_register")}}>
+              <a class="btn btn-primary mt-3" href={{path('app_user_edit',{'id' : listUser.getId})}}>
               <span data-feather="edit"></span>
               Edytuj
             </a>
