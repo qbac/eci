@@ -11,7 +11,8 @@
     {{form_row(workTimeForm.project)}}
     {{form_row(workTimeForm.work_date)}}
     {{form_row(workTimeForm.work_time)}}
-    <button type="submit" class="btn btn-primary mt-3">Dodaj</button>
+    {{form_widget(workTimeForm.add)}}
+    {{form_widget(workTimeForm.getDay)}}
 {{form_end(workTimeForm)}}
 
       <div class="table-responsive">
