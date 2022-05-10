@@ -19,9 +19,11 @@ class UserController extends AbstractController
     {
         $em = $doctrine->getManager();
         $listUsers = $em->getRepository(User::class)->findBy(['active' => '1']);
+        $listUsersUnactive = $em->getRepository(User::class)->findBy(['active' => '0']);
         return $this->render('user/index.html.twig', [
             'controller_name' => 'Użytkownicy',
-            'listUsers' => $listUsers
+            'listUsers' => $listUsers,
+            'listUsersUnactive' => $listUsersUnactive
         ]);
     }
     #[Route('/user/addWorker', name: 'app_user_add_worker')]
