@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{controller_name}}{% endblock %}
+
+{% block body %}
+<h1>{{ controller_name }}</h1>
+
+{% form_theme addWorkerForm 'bootstrap_4_layout.html.twig' %}
+{{form_start(addWorkerForm)}}
+    {{form_row(addWorkerForm.first_name)}}
+    {{form_row(addWorkerForm.last_name)}}
+    {{form_row(addWorkerForm.employ)}}
+    <button type="submit" class="btn btn-primary mt-3">Dodaj</button>
+{{form_end(addWorkerForm)}}
+
+{% endblock %}
