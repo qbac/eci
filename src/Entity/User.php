@@ -41,6 +41,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: WorkTime::class)]
     private $workTimes;
 
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    private $costHour;
+
     public function __construct()
     {
         $this->workTimes = new ArrayCollection();
@@ -190,6 +193,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $workTime->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCostHour(): ?string
+    {
+        return $this->costHour;
+    }
+
+    public function setCostHour(?string $costHour): self
+    {
+        $this->costHour = $costHour;
 
         return $this;
     }

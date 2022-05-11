@@ -31,6 +31,7 @@ class WorkTimeController extends AbstractController
                 //$em = $doctrine->getManager();
                 if ($nextAction == 'new_edit'){
                     $us = $workTime->getUser()->getEmploy();
+                    $costHour = $workTime->getUser()->getCostHour();
                     $proj = $workTime->getProject();
                     $find = $em->getRepository(WorkTime::class)->findOneBy([
                         'work_date' => $form->get('work_date')->getData(),
@@ -43,9 +44,11 @@ class WorkTimeController extends AbstractController
                     if($find) {
                         $this->addFlash('warning', 'Wpis już istnieje. Został poprawiony.');
                         $find->setWorkTime($form->get('work_time')->getData());
+                        $find->setCostHour($costHour);
                         $em->flush();
                     } else {
                         $workTime->setEmploy($us);
+                        $workTime->setCostHour($costHour);
                         $em->persist($workTime);
                         $em->flush();
                         $flash = $wd.' '.$time.', '.$workTime->getProject()->getName().', '.$workTime->getUser()->getFirstName().' '.$workTime->getUser()->getLastName();

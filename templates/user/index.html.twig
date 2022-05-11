@@ -19,6 +19,7 @@
               <th scope="col">Imię</th>
               <th scope="col">Nazwisko</th>
               <th scope="col">Sposób zatrudnienia</th>
+              <th scope="col">Stawka godzinowa</th>
               <th scope="col">Edycja</th>
             </tr>
           </thead>
@@ -30,6 +31,7 @@
               <td>{{listUser.FirstName}}</td>
               <td>{{listUser.LastName}}</td>
               <td>{{listUser.Employ.name}}</td>
+              <td>{{listUser.costHour}}</td>
               <td>
               <a class="btn btn-primary mt-3" href={{path('app_user_edit',{'id' : listUser.getId})}}>
               <span data-feather="edit"></span>
@@ -52,6 +54,7 @@
               <th scope="col">Imię</th>
               <th scope="col">Nazwisko</th>
               <th scope="col">Sposób zatrudnienia</th>
+              <th scope="col">Stawka godzinowa</th>
               <th scope="col">Edycja</th>
             </tr>
           </thead>
@@ -63,6 +66,7 @@
               <td>{{listUserUnactive.FirstName}}</td>
               <td>{{listUserUnactive.LastName}}</td>
               <td>{{listUserUnactive.Employ.name}}</td>
+              <td>{{listUserUnactive.costHour}}</td>
               <td>
               <a class="btn btn-primary mt-3" href={{path('app_user_edit',{'id' : listUserUnactive.getId})}}>
               <span data-feather="edit"></span>

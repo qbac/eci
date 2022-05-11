@@ -50,7 +50,9 @@ class WorkTimeRepository extends ServiceEntityRepository
     public function getUserDataWorkTimeSum(int $idUser, $dateStart, $dateEnd): array
     {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time, wt.project_id, p.name 
+        $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time,
+        FORMAT(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as sum_cost,
+        wt.project_id, p.name 
              FROM work_time wt 
              LEFT JOIN project p ON (wt.project_id = p.id)
              WHERE wt.user_id= :idUser AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd
@@ -67,7 +69,9 @@ class WorkTimeRepository extends ServiceEntityRepository
     public function getUserDataWorkTime (int $idUser, $dateStart, $dateEnd): array
     {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time, wt.project_id, p.name 
+        $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time,
+        FORMAT((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour,2) as sum_cost,
+        wt.project_id, p.name, cost_hour
         FROM work_time wt 
         LEFT JOIN project p ON (wt.project_id = p.id)
         WHERE wt.user_id= :idUser AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd
@@ -84,7 +88,9 @@ class WorkTimeRepository extends ServiceEntityRepository
 public function getProjectDataWorkTimeSum(int $idProject, $dateStart, $dateEnd): array
 {
     $conn = $this->getEntityManager()->getConnection();
-    $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time, wt.user_id, u.first_name, u.last_name
+    $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time, 
+    FORMAT(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as sum_cost,
+    wt.user_id, u.first_name, u.last_name
     FROM work_time wt
     LEFT JOIN user u ON (wt.user_id = u.id)
     WHERE wt.project_id= :idProject AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd
@@ -101,7 +107,9 @@ public function getProjectDataWorkTimeSum(int $idProject, $dateStart, $dateEnd):
 public function getProjectDataWorkTime(int $idProject, $dateStart, $dateEnd): array
 {
     $conn = $this->getEntityManager()->getConnection();
-    $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time, wt.project_id, u.first_name, u.last_name
+    $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time, 
+    FORMAT((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour,2) as sum_cost,
+    wt.project_id, u.first_name, u.last_name, wt.cost_hour
     FROM work_time wt
     LEFT JOIN user u ON (wt.user_id = u.id)
     WHERE wt.project_id= :idProject AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd
@@ -118,7 +126,9 @@ public function getProjectDataWorkTime(int $idProject, $dateStart, $dateEnd): ar
 public function getEmployDataWorkTimeSum(int $idEmploy, $dateStart, $dateEnd): array
 {
     $conn = $this->getEntityManager()->getConnection();
-    $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time, wt.user_id, u.first_name, u.last_name
+    $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time, 
+    FORMAT(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as sum_cost,
+    wt.user_id, u.first_name, u.last_name
     FROM work_time wt
     LEFT JOIN user u ON (wt.user_id = u.id)
     WHERE wt.employ_id= :idEmploy AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd
@@ -135,7 +145,9 @@ public function getEmployDataWorkTimeSum(int $idEmploy, $dateStart, $dateEnd): a
 public function getEmployDataWorkTime(int $idEmploy, $dateStart, $dateEnd): array
 {
     $conn = $this->getEntityManager()->getConnection();
-    $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time, wt.project_id, p.name, u.first_name, u.last_name
+    $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time, 
+    FORMAT((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour,2) as sum_cost,
+    wt.project_id, p.name, u.first_name, u.last_name, wt.cost_hour
     FROM work_time wt
     LEFT JOIN project p ON (wt.project_id = p.id)
     LEFT JOIN user u ON (wt.user_id = u.id)

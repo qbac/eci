@@ -20,6 +20,7 @@
             <tr>
               <th scope="col">Projekt</th>
               <th scope="col">Suma przepracowanych godzin</th>
+              <th scope="col">Koszt</th>
             </tr>
           </thead>
           <tbody>
@@ -27,6 +28,7 @@
           <tr>
               <td>{{rowResultSum.name}}</td>
               <td>{{rowResultSum.sum_work_time}}</td>
+              <td>{{rowResultSum.sum_cost}}</td>
             </tr>
           {% endfor %}
           </tbody>
@@ -41,6 +43,8 @@
               <th scope="col">Data</th>
               <th scope="col">Projekt</th>
               <th scope="col">Ilość przepracowanych godzin</th>
+              <th scope="col">Stawka godzinowa</th>
+              <th scope="col">Koszt</th>
             </tr>
           </thead>
           <tbody>
@@ -49,6 +53,8 @@
               <td>{{rowResultDay.work_date}}</td>
               <td>{{rowResultDay.name}}</td>
               <td>{{rowResultDay.work_time}}</td>
+              <td>{{rowResultDay.cost_hour}}</td>
+              <td>{{rowResultDay.sum_cost}}</td>
             </tr>
           {% endfor %}
           </tbody>

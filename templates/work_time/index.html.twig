@@ -23,6 +23,7 @@
               <th scope="col">Imię</th>
               <th scope="col">Nazwisko</th>
               <th scope="col">Data</th>
+              <th scope="col">Stawka godzinowa</th>
               <th scope="col">Ilość godzin</th>
             </tr>
           </thead>
@@ -33,6 +34,7 @@
               <td>{{rowDefaultData.getUser.getFirstName}}</td>
               <td>{{rowDefaultData.getUser.getLastName}}</td>
               <td>{{rowDefaultData.getWorkDate | date('Y-m-d')}}</td>
+              <td>{{rowDefaultData.getCostHour}}</td>
               <td>{{rowDefaultData.getWorkTime | date('H:i')}}</td>
             </tr>
           {% endfor %}

@@ -30,6 +30,9 @@ class WorkTime
     #[ORM\Column(type: 'time')]
     private $work_time;
 
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    private $cost_hour;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -91,6 +94,18 @@ class WorkTime
     public function setWorkTime(\DateTimeInterface $work_time): self
     {
         $this->work_time = $work_time;
+
+        return $this;
+    }
+
+    public function getCostHour(): ?string
+    {
+        return $this->cost_hour;
+    }
+
+    public function setCostHour(?string $cost_hour): self
+    {
+        $this->cost_hour = $cost_hour;
 
         return $this;
     }
