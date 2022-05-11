@@ -16,6 +16,7 @@ class ProjectsController extends AbstractController
     #[Route('/project', name: 'app_projects')]
     public function index(ManagerRegistry $doctrine): Response
     {
+        if (!$this->getUser()){return $this->redirectToRoute('app_login');}
         $em = $doctrine->getManager();
         $projectActive = $em->getRepository(Project::class)->findBy(['active' => true]);
         $projectUnactive = $em->getRepository(Project::class)->findBy(['active' => false]);
@@ -29,6 +30,7 @@ class ProjectsController extends AbstractController
     #[Route('/project/add', name: 'app_project_add')]
     public function addProject(Request $request, ManagerRegistry $doctrine): Response
     {
+        if (!$this->getUser()){return $this->redirectToRoute('app_login');}
         $project = new Project();
         $em = $doctrine->getManager();
         $form = $this->createForm(ProjectFormType::class, $project);
@@ -48,6 +50,7 @@ class ProjectsController extends AbstractController
     #[Route('/project/edit/{id}', name: 'app_project_edit')]
     public function editProject(Project $project, Request $request, EntityManagerInterface $em)
     {
+        if (!$this->getUser()){return $this->redirectToRoute('app_login');}
         $form = $this->createForm(ProjectFormType::class, $project);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

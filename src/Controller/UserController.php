@@ -12,11 +12,16 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 class UserController extends AbstractController
 {
+    #[IsGranted('ROLE_ADMIN',statusCode: 404, message: 'Nie masz dostępu do tej strony')]
     #[Route('/user', name: 'app_user')]
     public function index(ManagerRegistry $doctrine): Response
     {
+        if (!$this->getUser()){return $this->redirectToRoute('app_login');}
         $em = $doctrine->getManager();
         $listUsers = $em->getRepository(User::class)->findBy(['active' => '1']);
         $listUsersUnactive = $em->getRepository(User::class)->findBy(['active' => '0']);
@@ -29,6 +34,7 @@ class UserController extends AbstractController
     #[Route('/user/addWorker', name: 'app_user_add_worker')]
     public function addWorker(Request $request, ManagerRegistry $doctrine, UserPasswordHasherInterface $userPasswordHasher): Response
     {
+        if (!$this->getUser()){return $this->redirectToRoute('app_login');}
         $user = new User();
         $em = $doctrine->getManager();
         $form = $this->createForm(AddWorkerType::class, $user);
@@ -59,11 +65,21 @@ class UserController extends AbstractController
     }
 
     #[Route('/user/edit/{id}', name: 'app_user_edit')]
-    public function editUser(User $user, Request $request, EntityManagerInterface $em)
+    public function editUser(User $user, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher)
     {
+        if (!$this->getUser()){return $this->redirectToRoute('app_login');}
         $form = $this->createForm(UserEditType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('plainPassword')->getData())
+            {
+                $user->setPassword(
+                    $userPasswordHasher->hashPassword(
+                            $user,
+                            $form->get('plainPassword')->getData()
+                        )
+                    );
+            }
             $em->persist($user);
             $em->flush();
             $this->addFlash('success', 'Poprawiono Dane użytkownika');

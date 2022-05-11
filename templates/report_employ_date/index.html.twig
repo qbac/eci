@@ -40,6 +40,7 @@
           <thead>
             <tr>
               <th scope="col">Data</th>
+              <th scope="col">Imię i Nazwisko</th>
               <th scope="col">Projekt</th>
               <th scope="col">Ilość przepracowanych godzin</th>
             </tr>
@@ -48,6 +49,7 @@
           {% for rowResultDay in resultReportDays %}
           <tr>
               <td>{{rowResultDay.work_date}}</td>
+              <td>{{rowResultDay.first_name}} {{rowResultDay.last_name}}</td>
               <td>{{rowResultDay.name}}</td>
               <td>{{rowResultDay.work_time}}</td>
             </tr>

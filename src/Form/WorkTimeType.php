@@ -51,7 +51,7 @@ class WorkTimeType extends AbstractType
                 },
             ])
             ->add('add', SubmitType::class, ['label' => 'Dodaj', 'attr' => ['class' => 'btn btn-primary mt-3']])
-            ->add('getDay', SubmitType::class, ['label' => 'Pokaż wybrany dzień', 'attr' => ['class' => 'btn btn-primary mt-3']])
+            ->add('getDay', SubmitType::class, ['label' => 'Pokaż wybrany dzień', 'attr' => ['class' => 'btn btn-success mt-3']])
         ;
 
         $builder->get('work_date')->addModelTransformer(new CallbackTransformer(

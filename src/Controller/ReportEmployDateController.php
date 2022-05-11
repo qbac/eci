@@ -15,6 +15,7 @@ class ReportEmployDateController extends AbstractController
     #[Route('/report/employ/date', name: 'app_report_employ_date')]
     public function index(Request $request, WorkTimeRepository $workTimeRepository): Response
     {
+        if (!$this->getUser()){return $this->redirectToRoute('app_login');}
         $resultSum = array();
         $visibleResult = false;
         $resultDays = array();

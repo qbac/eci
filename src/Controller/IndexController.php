@@ -16,7 +16,7 @@ class IndexController extends AbstractController
         // ]);
 
         if ($this->getUser()) {
-            return $this->redirectToRoute('app_user');
+            return $this->redirectToRoute('app_work_time');
         } else {
             return $this->redirectToRoute('app_login');
         }
