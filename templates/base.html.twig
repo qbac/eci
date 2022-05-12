@@ -60,7 +60,27 @@
               Dodaj czas
             </a>
           </li>
-          <ul class="nav-item">
+          <li class="nav-item">
+            <a class="nav-link" href={{path("app_projects")}}>
+              <span data-feather="package"></span>
+              Projekty
+            </a>
+          </li>
+          {% if is_granted('ROLE_ADMIN') %}
+          <li class="nav-item">
+            <a class="nav-link" href={{path("app_user")}}>
+              <span data-feather="users"></span>
+              Użytkownicy
+            </a>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+          <a class="nav-link" href={{path("app_employ")}}>
+              <span data-feather="briefcase"></span>
+              Sposób zatrudnienia
+            </a>
+          </li>
+          <ul class="nav-item mt-3">
           <span data-feather="layers"></span>
           Raporty
             <li class="nav-item">
@@ -82,20 +102,6 @@
             </a>
           </li>
           </ul>
-          <li class="nav-item">
-            <a class="nav-link" href={{path("app_projects")}}>
-              <span data-feather="package"></span>
-              Projekty
-            </a>
-          </li>
-          {% if is_granted('ROLE_ADMIN') %}
-          <li class="nav-item">
-            <a class="nav-link" href={{path("app_user")}}>
-              <span data-feather="users"></span>
-              Użytkownicy
-            </a>
-          </li>
-          {% endif %}
         </ul>
       </div>
     </nav>

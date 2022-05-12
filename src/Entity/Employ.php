@@ -24,6 +24,9 @@ class Employ
     #[ORM\OneToMany(mappedBy: 'employ', targetEntity: WorkTime::class)]
     private $workTimes;
 
+    #[ORM\Column(type: 'boolean')]
+    private $active;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -103,6 +106,18 @@ class Employ
                 $workTime->setEmploy(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
 
         return $this;
     }
