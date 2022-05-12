@@ -19,23 +19,28 @@
         <table class="table table-striped table-sm">
           <thead>
             <tr>
-              <th scope="col">Projekt</th>
-              <th scope="col">Imię</th>
-              <th scope="col">Nazwisko</th>
               <th scope="col">Data</th>
+              <th scope="col">Projekt</th>
+              <th scope="col">Imię i Nazwisko</th>
               <th scope="col">Stawka godzinowa</th>
-              <th scope="col">Ilość godzin</th>
+              <th scope="col">Czas pracy</th>
+              <th scope="col">Edytuj</th>
             </tr>
           </thead>
           <tbody>
           {% for rowDefaultData in defaultData %}
           <tr>
-              <td>{{rowDefaultData.getProject.getName}}</td>
-              <td>{{rowDefaultData.getUser.getFirstName}}</td>
-              <td>{{rowDefaultData.getUser.getLastName}}</td>
               <td>{{rowDefaultData.getWorkDate | date('Y-m-d')}}</td>
+              <td>{{rowDefaultData.getProject.getName}}</td>
+              <td>{{rowDefaultData.getUser.getFirstName}} {{rowDefaultData.getUser.getLastName}}</td>
               <td>{{rowDefaultData.getCostHour}}</td>
               <td>{{rowDefaultData.getWorkTime | date('H:i')}}</td>
+              <td>
+              <a class="btn btn-primary" href={{path('app_work_time_edit',{'id' : rowDefaultData.getId})}}>
+              <span data-feather="edit"></span>
+              Edytuj
+            </a>
+              </td>
             </tr>
           {% endfor %}
           </tbody>
