@@ -37,7 +37,11 @@ class WorkTimeType extends AbstractType
                 'choice_label' => function($value) {
                     return $value->getFirstName().' '.$value->getlastName();
                 },
-                'choice_value' => 'id'
+                'choice_value' => 'id',
+                'query_builder' => function(EntityRepository $repo) {
+                    $builder = $repo->createQueryBuilder('user');
+                    return $builder->where('user.active = 1');
+                },
 
             ])
             ->add('project', EntityType::class, [

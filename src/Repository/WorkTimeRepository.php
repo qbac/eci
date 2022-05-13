@@ -51,7 +51,7 @@ class WorkTimeRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time,
-        FORMAT(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as sum_cost,
+        ROUND(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as sum_cost,
         wt.project_id, p.name 
              FROM work_time wt 
              LEFT JOIN project p ON (wt.project_id = p.id)
@@ -70,7 +70,7 @@ class WorkTimeRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time,
-        FORMAT((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour,2) as sum_cost,
+        ROUND((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour,2) as sum_cost,
         wt.project_id, p.name, cost_hour
         FROM work_time wt 
         LEFT JOIN project p ON (wt.project_id = p.id)
@@ -89,7 +89,7 @@ public function getProjectDataWorkTimeSum(int $idProject, $dateStart, $dateEnd):
 {
     $conn = $this->getEntityManager()->getConnection();
     $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time, 
-    FORMAT(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as sum_cost,
+    ROUND(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as sum_cost,
     wt.user_id, u.first_name, u.last_name
     FROM work_time wt
     LEFT JOIN user u ON (wt.user_id = u.id)
@@ -108,7 +108,7 @@ public function getProjectDataWorkTime(int $idProject, $dateStart, $dateEnd): ar
 {
     $conn = $this->getEntityManager()->getConnection();
     $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time, 
-    FORMAT((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour,2) as sum_cost,
+    ROUND((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour,2) as sum_cost,
     wt.project_id, u.first_name, u.last_name, wt.cost_hour
     FROM work_time wt
     LEFT JOIN user u ON (wt.user_id = u.id)
@@ -127,7 +127,7 @@ public function getEmployDataWorkTimeSum(int $idEmploy, $dateStart, $dateEnd): a
 {
     $conn = $this->getEntityManager()->getConnection();
     $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time, 
-    FORMAT(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as sum_cost,
+    ROUND(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as sum_cost,
     wt.user_id, u.first_name, u.last_name
     FROM work_time wt
     LEFT JOIN user u ON (wt.user_id = u.id)
@@ -146,13 +146,29 @@ public function getEmployDataWorkTime(int $idEmploy, $dateStart, $dateEnd): arra
 {
     $conn = $this->getEntityManager()->getConnection();
     $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time, 
-    FORMAT((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour,2) as sum_cost,
+    ROUND((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour,2) as sum_cost,
     wt.project_id, p.name, u.first_name, u.last_name, wt.cost_hour
     FROM work_time wt
     LEFT JOIN project p ON (wt.project_id = p.id)
     LEFT JOIN user u ON (wt.user_id = u.id)
     WHERE wt.employ_id= :idEmploy AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd
     ORDER BY wt.work_date";
+    $stmt = $conn->prepare($sql);
+    $resultSet = $stmt->executeQuery(['idEmploy' => $idEmploy, 'dateStart'=> $dateStart, 'dateEnd' => $dateEnd]);
+    // returns an array of arrays (i.e. a raw data set)
+    return $resultSet->fetchAllAssociative();
+}
+
+/**
+ * @return WorkTimeEmploy [sum_cost, sum_work_time] Returns an array - employee working time in a given date range, summed up according to projects.
+ */
+public function getEmployDataTotalSum(int $idEmploy, $dateStart, $dateEnd): array
+{
+    $sql = "SELECT ROUND(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as total_sum_cost,
+    TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as total_sum_work_time
+    FROM work_time wt
+    WHERE wt.employ_id= :idEmploy AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd";
+    $conn = $this->getEntityManager()->getConnection();
     $stmt = $conn->prepare($sql);
     $resultSet = $stmt->executeQuery(['idEmploy' => $idEmploy, 'dateStart'=> $dateStart, 'dateEnd' => $dateEnd]);
     // returns an array of arrays (i.e. a raw data set)
