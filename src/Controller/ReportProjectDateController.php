@@ -20,6 +20,7 @@ class ReportProjectDateController extends AbstractController
         $resultSum = array();
         $visibleResult = false;
         $resultDays = array();
+        $resultTotal = array();
         $form = $this->createForm(ReportProjectDateType::class, $workTime);
         $form->handleRequest($request);
 
@@ -31,6 +32,7 @@ class ReportProjectDateController extends AbstractController
             $dateEnd = $form->get('work_date_end')->getData()->format('Y-m-d');
             $resultSum = $workTimeRepository->getProjectDataWorkTimeSum($idProject, $dateStart, $dateEnd);
             $resultDays = $workTimeRepository->getProjectDataWorkTime($idProject, $dateStart, $dateEnd);
+            $resultTotal = $workTimeRepository->getProjectDataTotalSum($idProject, $dateStart, $dateEnd);
         }
 
         return $this->render('report_project_date/index.html.twig', [
@@ -38,7 +40,8 @@ class ReportProjectDateController extends AbstractController
             'reportProjectDateForm' => $form->createView(),
             'visibleResult' => $visibleResult,
             'resultReportSum' => $resultSum,
-            'resultReportDays' => $resultDays
+            'resultReportDays' => $resultDays,
+            'resultTotal' => $resultTotal
         ]);
     }
 }

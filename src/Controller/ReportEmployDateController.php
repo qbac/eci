@@ -19,6 +19,7 @@ class ReportEmployDateController extends AbstractController
         $resultSum = array();
         $visibleResult = false;
         $resultDays = array();
+        $resultTotal = array();
         $workTime = new WorkTime();
         $form = $this->createForm(ReportEmployDateType::class, $workTime);
         $form->handleRequest($request);

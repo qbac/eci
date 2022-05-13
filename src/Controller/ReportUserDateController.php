@@ -19,6 +19,7 @@ class ReportUserDateController extends AbstractController
         $resultSum = array();
         $visibleResult = false;
         $resultDays = array();
+        $resultTotal = array();
         $workTime = new WorkTime();
         $form = $this->createForm(ReportUserDateType::class, $workTime);
         $form->handleRequest($request);
@@ -31,6 +32,7 @@ class ReportUserDateController extends AbstractController
             $dateEnd = $form->get('work_date_end')->getData()->format('Y-m-d');
             $resultSum = $workTimeRepository->getUserDataWorkTimeSum($idUser, $dateStart, $dateEnd);
             $resultDays = $workTimeRepository->getUserDataWorkTime($idUser, $dateStart, $dateEnd);
+            $resultTotal = $workTimeRepository->getUserDataTotalSum($idUser, $dateStart, $dateEnd);
         }
 
         return $this->render('report_user_date/index.html.twig', [
@@ -38,7 +40,8 @@ class ReportUserDateController extends AbstractController
             'reportUserDateForm' => $form->createView(),
             'visibleResult' => $visibleResult,
             'resultReportSum' => $resultSum,
-            'resultReportDays' => $resultDays
+            'resultReportDays' => $resultDays,
+            'resultTotal' => $resultTotal
         ]);
     }
 }
