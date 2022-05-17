@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints;
@@ -67,6 +68,8 @@ class ReportProjectDateType extends AbstractType
                     }
                 }),
             ],])
+            ->add('submit', SubmitType::class, ['label' => 'Pokaż', 'attr' => ['class' => 'btn btn-primary mt-3']])
+            ->add('pdf', SubmitType::class, ['label' => 'Raport PDF', 'attr' => ['class' => 'btn btn-success mt-3']])
         ;
 
         $builder->get('work_date_start')->addModelTransformer(new CallbackTransformer(

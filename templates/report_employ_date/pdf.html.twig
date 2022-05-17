@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ title }}</title>
+            {% block stylesheets %}
+    <style>
+      body {
+        font-family: DejaVu Sans;
+        font-size: 10px;
+      }
+      table {
+          border-collapse: collapse;
+          width: 100%;
+      }
+      <style>
+#customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+</style>
+        </style>
+        {% endblock %}
+
+    </head>
+    <body>
+<h1>{{ title }}</h1>
+<h3>Pracownik: {{firstName}} {{lastName}}</h3>
+<h3>Zakres dat: {{dateStart}} - {{dateEnd}}</h3>
+<h2 class="mt-3">Podsumowanie</h2>
+        <table id="customers" class="table">
+          <thead>
+            <tr>
+              <th>Projekt</th>
+              <th>Suma przepracowanych godzin</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for rowResultSum in resultReportSum %}
+          <tr>
+              <td>{{rowResultSum.name}}</td>
+              <td>{{rowResultSum.sum_work_time}}</td>
+            </tr>
+          {% endfor %}
+          <tr>
+              <td><strong>RAZEM</strong></td>
+              <td><strong>{{resultTotal.0.total_sum_work_time}}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+<h2 class="mt-3">Ilość przepracowanych godzin</h2>
+<div class="table-responsive">
+        <table id="customers" class="table">
+          <thead>
+            <tr>
+              <th scope="col">Data</th>
+              <th scope="col">Projekt</th>
+              <th scope="col">Ilość przepracowanych godzin</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for rowResultDay in resultReportDays %}
+          <tr>
+              <td>{{rowResultDay.work_date}}</td>
+              <td>{{rowResultDay.name}}</td>
+              <td>{{rowResultDay.work_time}}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div>
+      <br><br><br>
+      .................................................<br>
+  ͏ ͏ ͏ ͏ Podpis pracownika
+      </div>
+    </body>
+</html>

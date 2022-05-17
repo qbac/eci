@@ -9,7 +9,8 @@
     {{form_row(reportUserDateForm.user)}}
     {{form_row(reportUserDateForm.work_date_start)}}
     {{form_row(reportUserDateForm.work_date_end)}}
-    <button type="submit" class="btn btn-primary mt-3">Pokaż</button>
+    {{form_widget(reportUserDateForm.submit)}}
+    {{form_widget(reportUserDateForm.pdf)}}
 {{form_end(reportUserDateForm)}}
 
 {% if visibleResult == true %}
