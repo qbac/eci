@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\AddWorkerType;
 use App\Form\UserEditType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,12 +20,15 @@ class UserController extends AbstractController
 {
     #[IsGranted('ROLE_ADMIN',statusCode: 404, message: 'Nie masz dostępu do tej strony')]
     #[Route('/user', name: 'app_user')]
-    public function index(ManagerRegistry $doctrine): Response
+    public function index(ManagerRegistry $doctrine, UserRepository $userRepository): Response
     {
         if (!$this->getUser()){return $this->redirectToRoute('app_login');}
         $em = $doctrine->getManager();
-        $listUsers = $em->getRepository(User::class)->findBy(['active' => '1']);
-        $listUsersUnactive = $em->getRepository(User::class)->findBy(['active' => '0']);
+        //$listUsers = $em->getRepository(User::class)->find(['active' => '1']);
+        $listUsers = $userRepository->getActiveUser();
+        //$listUsersUnactive = $em->getRepository(User::class)->findBy(['active' => '0']);
+        $listUsersUnactive = $userRepository->getUnactiveUser();
+        
         return $this->render('user/index.html.twig', [
             'controller_name' => 'Użytkownicy',
             'listUsers' => $listUsers,

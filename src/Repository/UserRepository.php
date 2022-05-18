@@ -62,6 +62,30 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
+    /**
+     * Get Active User except Admin
+     */
+    public function getActiveUser()
+    {
+        $qb = $this->createQueryBuilder('u')
+        ->where('u.active = 1')
+        ->andWhere("u.email <> 'admin@elbitech.pl'");
+        $query = $qb->getQuery();
+        return $query->execute();
+    }
+
+        /**
+     * Get Active User except Admin
+     */
+    public function getUnactiveUser()
+    {
+        $qb = $this->createQueryBuilder('u')
+        ->where('u.active = 0')
+        ->andWhere("u.email <> 'admin@elbitech.pl'");
+        $query = $qb->getQuery();
+        return $query->execute();
+    }
+
     // /**
     //  * @return User[] Returns an array of User objects
     //  */
