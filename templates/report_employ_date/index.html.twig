@@ -9,7 +9,8 @@
     {{form_row(reportEmployDateForm.employ)}}
     {{form_row(reportEmployDateForm.work_date_start)}}
     {{form_row(reportEmployDateForm.work_date_end)}}
-    <button type="submit" class="btn btn-primary mt-3">Pokaż</button>
+    {{form_widget(reportEmployDateForm.submit)}}
+    {{form_widget(reportEmployDateForm.pdf)}}
 {{form_end(reportEmployDateForm)}}
 
 {% if visibleResult == true %}
