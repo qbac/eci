@@ -42,6 +42,22 @@
 
     </head>
     <body>
+
+ <script type="text/php">
+        if ( isset($pdf) ) {
+            $x = 540;
+            $y = 814;
+            $text = "{PAGE_NUM} / {PAGE_COUNT}";
+            $font = $fontMetrics->get_font("DejaVu Sans", "normal");
+            $size = 8;
+            $color = array(0,0,0);
+            $word_space = 0.0;  //  default
+            $char_space = 0.0;  //  default
+            $angle = 0.0;   //  default
+            $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
+        }
+    </script>
+
 <h1>{{ title }}</h1>
 <h3>Nazwa projektu: {{projectName}}</h3>
 <h3>Zakres dat: {{dateStart}} - {{dateEnd}}</h3>

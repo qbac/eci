@@ -63,6 +63,7 @@ class ReportUserDateController extends AbstractController
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Courier');
+        $pdfOptions->set('isPhpEnabled', true);
         
         // Instantiate Dompdf with our options
         $dompdf = new Dompdf($pdfOptions);
