@@ -20,6 +20,7 @@
               <th scope="col">Nazwisko</th>
               <th scope="col">Sposób zatrudnienia</th>
               <th scope="col">Stawka godzinowa</th>
+              <th scope="col">Ostatnio pracował</th>
               <th scope="col">Edycja</th>
             </tr>
           </thead>
@@ -30,10 +31,15 @@
               <td>{{listUser.email}}</td>
               <td>{{listUser.FirstName}}</td>
               <td>{{listUser.LastName}}</td>
-              <td>{{listUser.Employ.name}}</td>
+              <td>{{listUser.EmployName}}</td>
               <td>{{listUser.costHour}}</td>
+              {% if listUser.maxWorkDate|date('U') < ('-5 days')|date('U')%}
+                <td class="text-danger"><strong>{{listUser.maxWorkDate}}</strong></td>
+              {% else %}
+                <td>{{listUser.maxWorkDate}}</td>
+              {% endif %} 
               <td>
-              <a class="btn btn-primary" href={{path('app_user_edit',{'id' : listUser.getId})}}>
+              <a class="btn btn-primary" href={{path('app_user_edit',{'id' : listUser.id})}}>
               <span data-feather="edit"></span>
               Edytuj
             </a>

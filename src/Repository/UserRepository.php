@@ -67,11 +67,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function getActiveUser()
     {
-        $qb = $this->createQueryBuilder('u')
-        ->where('u.active = 1')
-        ->andWhere("u.email <> 'admin@elbitech.pl'");
-        $query = $qb->getQuery();
-        return $query->execute();
+        $sql = "SELECT u.id, u.first_name as FirstName, u.last_name as LastName, u.email, MAX(wt.work_date) as maxWorkDate, e.name as EmployName, u.cost_hour as costHour FROM user u 
+        LEFT JOIN work_time wt ON u.id = wt.user_id
+        LEFT JOIN employ e ON u.employ_id = e.id
+        where u.active=1 
+        AND u.email <> 'admin@elbitech.pl'
+        GROUP BY u.id";
+    $conn = $this->getEntityManager()->getConnection();
+    $stmt = $conn->prepare($sql);
+    $resultSet = $stmt->executeQuery();
+    // returns an array of arrays (i.e. a raw data set)
+    return $resultSet->fetchAllAssociative();
     }
 
         /**
