@@ -8,6 +8,7 @@ use App\Entity\WorkTime;
 use App\Form\WorkTimeEditType;
 use App\Form\WorkTimeType;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -74,11 +75,18 @@ class WorkTimeController extends AbstractController
     }
     #[IsGranted('ROLE_ADMIN',statusCode: 404, message: 'Nie masz dostępu do tej strony')]
     #[Route('/worktime/edit/{id}', name: 'app_work_time_edit')]
-    public function workTimeEdit(WorkTime $workTime ,Request $request)
+    public function workTimeEdit(WorkTime $workTime ,Request $request, EntityManagerInterface $em)
     {
         if (!$this->getUser()){return $this->redirectToRoute('app_login');}
         $form = $this->createForm(WorkTimeEditType::class, $workTime);
         $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($workTime);
+            $em->flush();
+            $this->addFlash('success', 'Poprawiono Dane użytkownika');
+            return $this->redirectToRoute('app_work_time');
+        }
         
         return $this->render('work_time/edit.html.twig', [
             'controller_name' => 'Edytuj czas pracy pracownika',
