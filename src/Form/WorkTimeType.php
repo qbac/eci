@@ -40,7 +40,8 @@ class WorkTimeType extends AbstractType
                 'choice_value' => 'id',
                 'query_builder' => function(EntityRepository $repo) {
                     $builder = $repo->createQueryBuilder('user');
-                    return $builder->where('user.active = 1');
+                    $builder->where('user.active = 1');
+                    return $builder->andWhere("user.email <> 'admin@elbitech.pl'");
                 },
 
             ])
