@@ -67,9 +67,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function getActiveUser()
     {
-        $sql = "SELECT u.id, u.first_name as FirstName, u.last_name as LastName, u.email, MAX(wt.work_date) as maxWorkDate, e.name as EmployName, u.cost_hour as costHour FROM user u 
+        $sql = "SELECT u.id, u.first_name as FirstName, u.last_name as LastName, u.email, MAX(wt.work_date) as maxWorkDate, e.name as EmployName, u.cost_hour as costHour, p.name as projectName FROM user u 
         LEFT JOIN work_time wt ON u.id = wt.user_id
         LEFT JOIN employ e ON u.employ_id = e.id
+        LEFT JOIN project p ON wt.project_id = p.id
         where u.active=1 
         AND u.email <> 'admin@elbitech.pl'
         GROUP BY u.id";
