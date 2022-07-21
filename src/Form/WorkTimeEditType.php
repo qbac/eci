@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Project;
 use App\Entity\User;
 use App\Entity\WorkTime;
+use App\Entity\Employ;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -39,6 +40,16 @@ class WorkTimeEditType extends AbstractType
                 },
                 'choice_value' => 'id'
 
+            ])
+            ->add('employ', EntityType::class, [
+                'label' => 'Sposób zatrudnienia',
+                'class' => Employ::class,
+                'choice_label' => 'name',
+                'choice_value' => 'id',
+                'query_builder' => function(EntityRepository $repo) {
+                    $builder = $repo->createQueryBuilder('employ');
+                    return $builder->where('employ.active = 1');
+                },
             ])
             ->add('project', EntityType::class, [
                 'label' => 'Projekt',

@@ -22,6 +22,7 @@
               <th scope="col">Data</th>
               <th scope="col">Projekt</th>
               <th scope="col">Imię i Nazwisko</th>
+              <th scope="col">Sposób zatrudnienia</th>
               <th scope="col">Stawka godzinowa</th>
               <th scope="col">Czas pracy</th>
               <th scope="col">Edytuj</th>
@@ -33,6 +34,7 @@
               <td>{{rowDefaultData.getWorkDate | date('Y-m-d')}}</td>
               <td>{{rowDefaultData.getProject.getName}}</td>
               <td>{{rowDefaultData.getUser.getFirstName}} {{rowDefaultData.getUser.getLastName}}</td>
+              <td>{{rowDefaultData.getEmploy.getName}}</td>
               <td>{{rowDefaultData.getCostHour}}</td>
               <td>{{rowDefaultData.getWorkTime | date('H:i')}}</td>
               <td>

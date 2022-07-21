@@ -143,7 +143,7 @@ public function getProjectDataWorkTime(int $idProject, $dateStart, $dateEnd): ar
 public function getProjectDataTotalSum(int $idProject, $dateStart, $dateEnd): array
 {
     $sql = "SELECT ROUND(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as total_sum_cost,
-    TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as total_sum_work_time
+    CONCAT((SUM(HOUR(wt.work_time)) + FLOOR(SUM(MINUTE(wt.work_time))/60)),':',(IF(MOD(SUM(MINUTE(wt.work_time)),60)=0,'00',MOD(SUM(MINUTE(wt.work_time)),60)))) as total_sum_work_time
     FROM work_time wt
     WHERE wt.project_id= :idProject AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd";
     $conn = $this->getEntityManager()->getConnection();
