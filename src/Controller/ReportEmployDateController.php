@@ -28,6 +28,7 @@ class ReportEmployDateController extends AbstractController
         if ($form->isSubmitted() && $form->isValid())
         {
             $nextAction = $form->get('pdf')->isClicked() ? 'genPdf': 'preview';
+            $nextAction2 = $form->get('pdfSimple')->isClicked() ? 'genPdf': 'preview';
             $visibleResult = true;
             $idEmploy = $workTime->getEmploy()->getId();
             $dateStart = $form->get('work_date_start')->getData()->format('Y-m-d');
@@ -38,7 +39,11 @@ class ReportEmployDateController extends AbstractController
 
             if ($nextAction == 'genPdf') {
                 $employName = $workTime->getEmploy()->getName();
-                return $this->pdfReport($idEmploy, $dateStart, $dateEnd, $employName, $workTimeRepository);
+                return $this->pdfReport($idEmploy, $dateStart, $dateEnd, $employName, $workTimeRepository, 1);
+            }
+            if ($nextAction2 == 'genPdf') {
+                $employName = $workTime->getEmploy()->getName();
+                return $this->pdfReport($idEmploy, $dateStart, $dateEnd, $employName, $workTimeRepository, 2);
             }
         }
 
@@ -53,7 +58,7 @@ class ReportEmployDateController extends AbstractController
     }
 
     #[Route('/report/employ/pdf', name: 'app_report_employ_pdf')]
-    public function pdfReport($idEmploy, $dateStart, $dateEnd, $employName, WorkTimeRepository $workTimeRepository)
+    public function pdfReport($idEmploy, $dateStart, $dateEnd, $employName, WorkTimeRepository $workTimeRepository, $options)
     {
         $resultSum = $workTimeRepository->getEmployDataWorkTimeSum($idEmploy, $dateStart, $dateEnd);
         $resultDays = $workTimeRepository->getEmployDataWorkTime($idEmploy, $dateStart, $dateEnd);
@@ -66,15 +71,30 @@ class ReportEmployDateController extends AbstractController
         // Instantiate Dompdf with our options
         $dompdf = new Dompdf($pdfOptions);
         // Retrieve the HTML generated in our twig file
-        $html = $this->renderView('report_employ_date/pdf.html.twig', [
-            'title' => "Raport",
-            'resultReportSum' => $resultSum,
-            'resultReportDays' => $resultDays,
-            'resultTotal' => $resultTotal,
-            'dateStart' => $dateStart,
-            'dateEnd' => $dateEnd,
-            'employName' => $employName,
-        ]);
+
+        if ($options == 1) {
+            $html = $this->renderView('report_employ_date/pdf.html.twig', [
+                'title' => "Raport",
+                'resultReportSum' => $resultSum,
+                'resultReportDays' => $resultDays,
+                'resultTotal' => $resultTotal,
+                'dateStart' => $dateStart,
+                'dateEnd' => $dateEnd,
+                'employName' => $employName,
+            ]);
+        }
+
+        if ($options == 2) {
+            $html = $this->renderView('report_employ_date/pdfSimple.html.twig', [
+                'title' => "Raport",
+                'resultReportSum' => $resultSum,
+                'resultReportDays' => $resultDays,
+                'resultTotal' => $resultTotal,
+                'dateStart' => $dateStart,
+                'dateEnd' => $dateEnd,
+                'employName' => $employName,
+            ]);
+        }
         
         $filename = 'raport-emp_'.$employName.'_'.$dateStart.'_'.$dateEnd.'.pdf';
         $dompdf->loadHtml($html);
