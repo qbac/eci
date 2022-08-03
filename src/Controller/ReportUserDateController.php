@@ -29,6 +29,7 @@ class ReportUserDateController extends AbstractController
         if ($form->isSubmitted() && $form->isValid())
         {
             $nextAction = $form->get('pdf')->isClicked() ? 'genPdf': 'preview';
+            $nextAction2 = $form->get('pdfSimple')->isClicked() ? 'genPdf': 'preview';
 
             $visibleResult = true;
             $idUser = $workTime->getUser()->getId();
@@ -41,7 +42,13 @@ class ReportUserDateController extends AbstractController
             if ($nextAction == 'genPdf') {
                 $firstName = $workTime->getUser()->getFirstName();
                 $lastName = $workTime->getUser()->getLastName();
-                return $this->pdfReport($idUser, $dateStart, $dateEnd, $firstName, $lastName, $workTimeRepository);
+                return $this->pdfReport($idUser, $dateStart, $dateEnd, $firstName, $lastName, $workTimeRepository, 1);
+            }
+
+            if ($nextAction2 == 'genPdf') {
+                $firstName = $workTime->getUser()->getFirstName();
+                $lastName = $workTime->getUser()->getLastName();
+                return $this->pdfReport($idUser, $dateStart, $dateEnd, $firstName, $lastName, $workTimeRepository, 2);
             }
         }
 
@@ -55,7 +62,7 @@ class ReportUserDateController extends AbstractController
         ]);
     }
     #[Route('/report/user/pdf', name: 'app_report_user_pdf')]
-    public function pdfReport($idUser, $dateStart, $dateEnd, $firstName, $lastName, WorkTimeRepository $workTimeRepository)
+    public function pdfReport($idUser, $dateStart, $dateEnd, $firstName, $lastName, WorkTimeRepository $workTimeRepository, $options)
     {
         $resultSum = $workTimeRepository->getUserDataWorkTimeSum($idUser, $dateStart, $dateEnd);
         $resultDays = $workTimeRepository->getUserDataWorkTime($idUser, $dateStart, $dateEnd);
@@ -68,17 +75,32 @@ class ReportUserDateController extends AbstractController
         // Instantiate Dompdf with our options
         $dompdf = new Dompdf($pdfOptions);
         // Retrieve the HTML generated in our twig file
-        $html = $this->renderView('report_user_date/pdf.html.twig', [
-            'title' => "Raport czasu pracy",
-            'resultReportSum' => $resultSum,
-            'resultReportDays' => $resultDays,
-            'resultTotal' => $resultTotal,
-            'dateStart' => $dateStart,
-            'dateEnd' => $dateEnd,
-            'firstName' => $firstName,
-            'lastName' => $lastName
-        ]);
-        
+        if ($options == 1){
+            $html = $this->renderView('report_user_date/pdf.html.twig', [
+                'title' => "Raport czasu pracy",
+                'resultReportSum' => $resultSum,
+                'resultReportDays' => $resultDays,
+                'resultTotal' => $resultTotal,
+                'dateStart' => $dateStart,
+                'dateEnd' => $dateEnd,
+                'firstName' => $firstName,
+                'lastName' => $lastName
+            ]);
+        }
+
+        if ($options == 2){
+            $html = $this->renderView('report_user_date/pdfSimple.html.twig', [
+                'title' => "Raport czasu pracy",
+                'resultReportSum' => $resultSum,
+                'resultReportDays' => $resultDays,
+                'resultTotal' => $resultTotal,
+                'dateStart' => $dateStart,
+                'dateEnd' => $dateEnd,
+                'firstName' => $firstName,
+                'lastName' => $lastName
+            ]);
+        }
+
         $filename = 'raport-czasu-pracy_'.$firstName.'-'.$lastName.'_'.$dateStart.'_'.$dateEnd.'.pdf';
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');

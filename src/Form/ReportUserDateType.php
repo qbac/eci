@@ -69,7 +69,12 @@ class ReportUserDateType extends AbstractType
                     }),
                 ],])
             ->add('submit', SubmitType::class, ['label' => 'Pokaż', 'attr' => ['class' => 'btn btn-primary mt-3']])
-            ->add('pdf', SubmitType::class, ['label' => 'Raport PDF', 'attr' => ['class' => 'btn btn-success mt-3']])
+            ->add('pdf', SubmitType::class, ['label' => 'Raport Pełny', 'attr' => ['class' => 'btn btn-success mt-3']])
+            ->add('pdfSimple', SubmitType::class, 
+            [
+                'label' => 'Raport Uproszczony', 
+                'attr' => ['class' => 'btn btn-success mt-3']
+            ])
         ;
 
         $builder->get('work_date_start')->addModelTransformer(new CallbackTransformer(
