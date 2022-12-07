@@ -68,6 +68,7 @@ class WorkTimeEditType extends AbstractType
                 'required' => false
             ])
             ->add('edit', SubmitType::class, ['label' => 'Popraw', 'attr' => ['class' => 'btn btn-primary mt-3']])
+            ->add('remove', SubmitType::class, ['label' => 'Usuń', 'attr' => ['class' => 'btn btn-danger mt-3']])
         ;
     }
 
