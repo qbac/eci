@@ -26,8 +26,23 @@ class WorkTimeType extends AbstractType
                 'format' => 'yyyy-MM-dd',
                 'html5' => true,
             ])
-            ->add('work_time', TimeType::class, [
-                'label' => 'Ilość przepracowanych godzin',
+            // ->add('work_time', TimeType::class, [
+            //     'label' => 'Ilość przepracowanych godzin',
+            //     'widget' => 'single_text',
+            //     'html5' => true,
+            // ])
+            ->add('work_start', TimeType::class, [
+                'label' => 'Godzina rozpoczęcia pracy',
+                'widget' => 'single_text',
+                'html5' => true,
+            ])
+            ->add('work_end', TimeType::class, [
+                'label' => 'Godzina zakończenia pracy',
+                'widget' => 'single_text',
+                'html5' => true,
+            ])
+            ->add('travel_time', TimeType::class, [
+                'label' => 'Czas dojazdu',
                 'widget' => 'single_text',
                 'html5' => true,
             ])
@@ -71,10 +86,46 @@ class WorkTimeType extends AbstractType
             }
         ));
 
-        $builder->get('work_time')->addModelTransformer(new CallbackTransformer(
+        // $builder->get('work_time')->addModelTransformer(new CallbackTransformer(
+        //     function ($value) {
+        //         if(!$value) {
+        //             return new \DateTime('08:00:00');
+        //         }
+        //         return $value;
+        //     },
+        //     function ($value) {
+        //         return $value;
+        //     }
+        // ));
+
+        $builder->get('work_start')->addModelTransformer(new CallbackTransformer(
             function ($value) {
                 if(!$value) {
                     return new \DateTime('08:00:00');
+                }
+                return $value;
+            },
+            function ($value) {
+                return $value;
+            }
+        ));
+
+        $builder->get('work_end')->addModelTransformer(new CallbackTransformer(
+            function ($value) {
+                if(!$value) {
+                    return new \DateTime('16:00:00');
+                }
+                return $value;
+            },
+            function ($value) {
+                return $value;
+            }
+        ));
+
+        $builder->get('travel_time')->addModelTransformer(new CallbackTransformer(
+            function ($value) {
+                if(!$value) {
+                    return new \DateTime('00:00:00');
                 }
                 return $value;
             },
