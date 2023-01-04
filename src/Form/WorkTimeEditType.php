@@ -27,8 +27,18 @@ class WorkTimeEditType extends AbstractType
                 'format' => 'yyyy-MM-dd',
                 'html5' => true,
             ])
-            ->add('work_time', TimeType::class, [
-                'label' => 'Ilość przepracowanych godzin',
+            ->add('work_start', TimeType::class, [
+                'label' => 'Godzina rozpoczęcia pracy',
+                'widget' => 'single_text',
+                'html5' => true,
+            ])
+            ->add('work_end', TimeType::class, [
+                'label' => 'Godzina zakończenia pracy',
+                'widget' => 'single_text',
+                'html5' => true,
+            ])
+            ->add('travel_time', TimeType::class, [
+                'label' => 'Czas dojazdu',
                 'widget' => 'single_text',
                 'html5' => true,
             ])

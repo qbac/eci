@@ -93,6 +93,12 @@ class WorkTimeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $workStart = new DateTime($form->get('work_start')->getData()->format('H:i'));
+            $workEnd = new DateTime($form->get('work_end')->getData()->format('H:i'));
+            $wt = $workEnd->diff($workStart);
+                    //$wt->format('%H:%I:%S');
+            $date = new DateTime($wt->format('%H:%I:%S'));
+            $workTime->setWorkTime($date);
             $em->persist($workTime);
             $em->flush();
             $this->addFlash('success', 'Poprawiono Dane użytkownika');

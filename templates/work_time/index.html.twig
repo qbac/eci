@@ -9,9 +9,20 @@
 {{form_start(workTimeForm)}}
     {{form_row(workTimeForm.user)}}
     {{form_row(workTimeForm.project)}}
-    {{form_row(workTimeForm.work_date)}}
-    {{form_row(workTimeForm.work_start)}}
-    {{form_row(workTimeForm.work_end)}}
+    
+    <div class="container">
+  <div class="row">
+      <div class="col-sm">
+      {{form_row(workTimeForm.work_date)}}
+    </div>
+    <div class="col-sm">
+      {{form_row(workTimeForm.work_start)}}
+    </div>
+    <div class="col-sm">
+      {{form_row(workTimeForm.work_end)}}
+    </div>
+  </div>
+</div>
     {{form_row(workTimeForm.travel_time)}}
     {{form_widget(workTimeForm.add)}}
     {{form_widget(workTimeForm.getDay)}}
@@ -42,7 +53,6 @@
               <td>
               <a class="btn btn-primary" href={{path('app_work_time_edit',{'id' : rowDefaultData.getId})}}>
               <span data-feather="edit"></span>
-              Edytuj
             </a>
               </td>
             </tr>

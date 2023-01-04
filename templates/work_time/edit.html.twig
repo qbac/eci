@@ -10,8 +10,20 @@
     {{form_row(editWorkTimeForm.user)}}
     {{form_row(editWorkTimeForm.project)}}
     {{form_row(editWorkTimeForm.employ)}}
-    {{form_row(editWorkTimeForm.work_date)}}
-    {{form_row(editWorkTimeForm.work_time)}}
+<div class="container">
+  <div class="row">
+      <div class="col-sm">
+      {{form_row(editWorkTimeForm.work_date)}}
+    </div>
+    <div class="col-sm">
+      {{form_row(editWorkTimeForm.work_start)}}
+    </div>
+    <div class="col-sm">
+      {{form_row(editWorkTimeForm.work_end)}}
+    </div>
+  </div>
+</div>
+    {{form_row(editWorkTimeForm.travel_time)}}
     {{form_row(editWorkTimeForm.cost_hour)}}
     {{form_widget(editWorkTimeForm.edit)}}
     {{form_widget(editWorkTimeForm.remove)}}
