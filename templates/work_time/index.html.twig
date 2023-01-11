@@ -7,6 +7,7 @@
 <h1>Dodaj czas pracy</h1>
 {% form_theme workTimeForm 'bootstrap_4_layout.html.twig' %}
 {{form_start(workTimeForm)}}
+    {{form_errors(workTimeForm)}}
     {{form_row(workTimeForm.user)}}
     {{form_row(workTimeForm.project)}}
     
@@ -21,6 +22,7 @@
     <div class="col-sm">
       {{form_row(workTimeForm.work_end)}}
     </div>
+    
   </div>
 </div>
     {{form_row(workTimeForm.travel_time)}}
@@ -36,8 +38,9 @@
               <th scope="col">Projekt</th>
               <th scope="col">Imię i Nazwisko</th>
               <th scope="col">Sposób zatrudnienia</th>
-              <th scope="col">Stawka godzinowa</th>
+              <th scope="col">Stawka godz.</th>
               <th scope="col">Czas pracy</th>
+              <th scope="col">Czas dojazdu</th>
               <th scope="col">Edytuj</th>
             </tr>
           </thead>
@@ -50,6 +53,7 @@
               <td>{{rowDefaultData.getEmploy.getName}}</td>
               <td>{{rowDefaultData.getCostHour}}</td>
               <td>{{rowDefaultData.getWorkTime | date('H:i')}}</td>
+              <td>{{rowDefaultData.getTravelTime | date('H:i')}}</td>
               <td>
               <a class="btn btn-primary" href={{path('app_work_time_edit',{'id' : rowDefaultData.getId})}}>
               <span data-feather="edit"></span>

@@ -70,6 +70,7 @@ class ReportProjectDateType extends AbstractType
             ],])
             ->add('submit', SubmitType::class, ['label' => 'Pokaż', 'attr' => ['class' => 'btn btn-primary mt-3']])
             ->add('pdf', SubmitType::class, ['label' => 'Raport PDF', 'attr' => ['class' => 'btn btn-success mt-3']])
+            ->add('pdfDetails', SubmitType::class, ['label' => 'Raport PDF szczegóły', 'attr' => ['class' => 'btn btn-success mt-3']])
         ;
 
         $builder->get('work_date_start')->addModelTransformer(new CallbackTransformer(

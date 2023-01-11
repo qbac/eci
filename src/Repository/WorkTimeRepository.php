@@ -100,12 +100,13 @@ public function getUserDataTotalSum(int $idUser, $dateStart, $dateEnd): array
 
 
 /**
- * @return WorkTimeSumProject [sum_work_time, project_id, p.name] Returns an array - employee working time in a given date range, summed up according to projects.
+ * @return WorkTimeSumProject [sum_work_time, sum_travel_time, project_id, p.name] Returns an array - employee working time in a given date range, summed up according to projects.
  */
 public function getProjectDataWorkTimeSum(int $idProject, $dateStart, $dateEnd): array
 {
     $conn = $this->getEntityManager()->getConnection();
-    $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time, 
+    $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time,
+    TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.travel_time))), '%H:%i') as sum_travel_time,
     ROUND(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as sum_cost,
     wt.user_id, u.first_name, u.last_name
     FROM work_time wt
@@ -126,7 +127,10 @@ public function getProjectDataWorkTime(int $idProject, $dateStart, $dateEnd): ar
     $conn = $this->getEntityManager()->getConnection();
     $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time, 
     ROUND((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour,2) as sum_cost,
-    wt.project_id, u.first_name, u.last_name, wt.cost_hour
+    wt.project_id, u.first_name, u.last_name, wt.cost_hour,
+    TIME_FORMAT(wt.work_start, '%H:%i') as work_start, 
+    TIME_FORMAT(wt.work_end, '%H:%i') as work_end, 
+    TIME_FORMAT(wt.travel_time, '%H:%i') as travel_time
     FROM work_time wt
     LEFT JOIN user u ON (wt.user_id = u.id)
     WHERE wt.project_id= :idProject AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd
@@ -138,12 +142,14 @@ public function getProjectDataWorkTime(int $idProject, $dateStart, $dateEnd): ar
 }
 
 /**
- * @return WorkTimeTotalSumProject [total_sum_work_time, total_sum_cost] Returns an array - employee working time in a given date range, summed up according to projects.
+ * @return WorkTimeTotalSumProject [total_sum_work_time, total_sum_cost, total_sum_travel_time, total_sum_time] Returns an array - employee working time in a given date range, summed up according to projects.
  */
 public function getProjectDataTotalSum(int $idProject, $dateStart, $dateEnd): array
 {
     $sql = "SELECT ROUND(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as total_sum_cost,
-    CONCAT((SUM(HOUR(wt.work_time)) + FLOOR(SUM(MINUTE(wt.work_time))/60)),':',(IF(MOD(SUM(MINUTE(wt.work_time)),60)=0,'00',MOD(SUM(MINUTE(wt.work_time)),60)))) as total_sum_work_time
+    CONCAT((SUM(HOUR(wt.work_time)) + FLOOR(SUM(MINUTE(wt.work_time))/60)),':',(IF(MOD(SUM(MINUTE(wt.work_time)),60)=0,'00',MOD(SUM(MINUTE(wt.work_time)),60)))) as total_sum_work_time,
+    CONCAT((SUM(HOUR(wt.travel_time)) + FLOOR(SUM(MINUTE(wt.travel_time))/60)),':', (IF(MOD(SUM(MINUTE(wt.travel_time)),60)=0,'00',MOD(SUM(MINUTE(wt.travel_time)),60)))) as total_sum_travel_time,
+    CONCAT((SUM(HOUR(wt.work_time)) + SUM(HOUR(wt.travel_time)) + FLOOR(SUM(MINUTE(wt.work_time))/60 + SUM(MINUTE(wt.travel_time))/60)),':',(IF(MOD(SUM(MINUTE(wt.work_time)) + SUM(MINUTE(wt.travel_time)),60)=0,'00',MOD(SUM(MINUTE(wt.work_time)) + SUM(MINUTE(wt.travel_time)),60)))) as total_sum_time
     FROM work_time wt
     WHERE wt.project_id= :idProject AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd";
     $conn = $this->getEntityManager()->getConnection();

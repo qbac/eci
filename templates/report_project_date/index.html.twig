@@ -11,6 +11,7 @@
     {{form_row(reportProjectDateForm.work_date_end)}}
     {{form_widget(reportProjectDateForm.submit)}}
     {{form_widget(reportProjectDateForm.pdf)}}
+    {{form_widget(reportProjectDateForm.pdfDetails)}}
 {{form_end(reportProjectDateForm)}}
 
 {% if visibleResult == true %}
@@ -21,7 +22,8 @@
             <tr>
               <th scope="col">Imię i Nazwisko</th>
               <th scope="col">Suma przepracowanych godzin</th>
-              <th scope="col">Koszt</th>
+              <th scope="col">Suma czasu podruży</th>
+              <th scope="col">Koszt pracy</th>
             </tr>
           </thead>
           <tbody>
@@ -29,12 +31,14 @@
           <tr>
               <td>{{rowResultSum.first_name}} {{rowResultSum.last_name}}</td>
               <td>{{rowResultSum.sum_work_time}}</td>
+              <td>{{rowResultSum.sum_travel_time}}</td>
               <td>{{rowResultSum.sum_cost}}</td>
             </tr>
           {% endfor %}
           <tr>
               <td><strong>RAZEM</strong></td>
               <td><strong>{{resultTotal.0.total_sum_work_time}}</strong></td>
+              <td><strong>{{resultTotal.0.total_sum_travel_time}}</strong></td>
               <td><strong>{{resultTotal.0.total_sum_cost}}</strong></td>
             </tr>
           </tbody>
@@ -48,8 +52,11 @@
             <tr>
               <th scope="col">Data</th>
               <th scope="col">Imię i Nazwisko</th>
+              <th scope="col">Godz. rozp.</th>
+              <th scope="col">Godz. zak.</th>
               <th scope="col">Czas pracy</th>
-              <th scope="col">Koszt</th>
+              <th scope="col">Czas doj.</th>
+              <th scope="col">Koszt pracy</th>
             </tr>
           </thead>
           <tbody>
@@ -57,7 +64,10 @@
           <tr>
               <td>{{rowResultDay.work_date}}</td>
               <td>{{rowResultDay.first_name}} {{rowResultDay.last_name}}</td>
+              <td>{{rowResultDay.work_start}}</td>
+              <td>{{rowResultDay.work_end}}</td>
               <td>{{rowResultDay.work_time}}</td>
+              <td>{{rowResultDay.travel_time}}</td>
               <td>{{rowResultDay.sum_cost}}</td>
             </tr>
           {% endfor %}

@@ -28,6 +28,7 @@ class ReportProjectDateController extends AbstractController
         if($form->isSubmitted() && $form->isValid())
         {
             $nextAction = $form->get('pdf')->isClicked() ? 'genPdf': 'preview';
+            $nextAction2 = $form->get('pdfDetails')->isClicked() ? 'genPdf': 'preview';
             $visibleResult = true;
             $idProject = $workTime->getProject()->getId();
             $dateStart = $form->get('work_date_start')->getData()->format('Y-m-d');
@@ -38,7 +39,12 @@ class ReportProjectDateController extends AbstractController
 
             if ($nextAction == 'genPdf') {
                 $projectName = $workTime->getProject()->getName();
-                return $this->pdfReport($idProject, $dateStart, $dateEnd, $projectName, $workTimeRepository);
+                return $this->pdfReport($idProject, $dateStart, $dateEnd, $projectName, $workTimeRepository, 1);
+            }
+
+            if ($nextAction2 == 'genPdf') {
+                $projectName = $workTime->getProject()->getName();
+                return $this->pdfReport($idProject, $dateStart, $dateEnd, $projectName, $workTimeRepository, 2);
             }
         }
 
@@ -53,7 +59,7 @@ class ReportProjectDateController extends AbstractController
     }
 
     #[Route('/report/project/pdf', name: 'app_report_project_pdf')]
-    public function pdfReport($idProject, $dateStart, $dateEnd, $projectName, WorkTimeRepository $workTimeRepository)
+    public function pdfReport($idProject, $dateStart, $dateEnd, $projectName, WorkTimeRepository $workTimeRepository, $options)
     {
         $resultSum = $workTimeRepository->getProjectDataWorkTimeSum($idProject, $dateStart, $dateEnd);
         $resultDays = $workTimeRepository->getProjectDataWorkTime($idProject, $dateStart, $dateEnd);
@@ -66,16 +72,30 @@ class ReportProjectDateController extends AbstractController
         // Instantiate Dompdf with our options
         $dompdf = new Dompdf($pdfOptions);
         // Retrieve the HTML generated in our twig file
-        $html = $this->renderView('report_project_date/pdf.html.twig', [
-            'title' => "Raport czasu pracy",
-            'resultReportSum' => $resultSum,
-            'resultReportDays' => $resultDays,
-            'resultTotal' => $resultTotal,
-            'dateStart' => $dateStart,
-            'dateEnd' => $dateEnd,
-            'projectName' => $projectName,
-        ]);
-        
+        if ($options == 1) {
+            $html = $this->renderView('report_project_date/pdf.html.twig', [
+                'title' => "Raport czasu pracy",
+                'resultReportSum' => $resultSum,
+                'resultReportDays' => $resultDays,
+                'resultTotal' => $resultTotal,
+                'dateStart' => $dateStart,
+                'dateEnd' => $dateEnd,
+                'projectName' => $projectName,
+            ]);
+        }
+
+        if ($options == 2) {
+            $html = $this->renderView('report_project_date/pdfDetails.html.twig', [
+                'title' => "Raport czasu pracy",
+                'resultReportSum' => $resultSum,
+                'resultReportDays' => $resultDays,
+                'resultTotal' => $resultTotal,
+                'dateStart' => $dateStart,
+                'dateEnd' => $dateEnd,
+                'projectName' => $projectName,
+            ]);
+        }
+
         $filename = 'raport-projekt_'.$projectName.'_'.$dateStart.'_'.$dateEnd.'.pdf';
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');

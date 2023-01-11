@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\WorkTimeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: WorkTimeRepository::class)]
 class WorkTime
@@ -153,5 +155,16 @@ class WorkTime
         $this->travel_time = $travel_time;
 
         return $this;
+    }
+
+    /**
+    * @Assert\Callback
+    */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        if ($this->work_start > $this->work_end) {
+            $context->buildViolation('Godzina zakończenia musi być większa od godziny rozpoczęcia')
+            ->addViolation();
+        }
     }
 }

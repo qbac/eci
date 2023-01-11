@@ -7,6 +7,7 @@
 
 {% form_theme editWorkTimeForm 'bootstrap_4_layout.html.twig' %}
 {{form_start(editWorkTimeForm)}}
+    {{form_errors(editWorkTimeForm)}}
     {{form_row(editWorkTimeForm.user)}}
     {{form_row(editWorkTimeForm.project)}}
     {{form_row(editWorkTimeForm.employ)}}

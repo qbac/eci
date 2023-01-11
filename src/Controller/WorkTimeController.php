@@ -50,24 +50,27 @@ class WorkTimeController extends AbstractController
                     //$wt->format('%H:%I:%S');
                     $date = new DateTime($wt->format('%H:%I:%S'));
 
-
-                    if($find) {
-                        $this->addFlash('warning', 'Wpis już istnieje. Został poprawiony.');
-                        //$find->setWorkTime($form->get('work_time')->getData());
-                        $find->setWorkTime($date);
-                        $find->setCostHour($costHour);
-                        $find->setWorkStart($form->get('work_start')->getData());
-                        $find->setWorkEnd($form->get('work_end')->getData());
-                        $find->setTravelTime($form->get('travel_time')->getData());
-                        $em->flush();
+                    if($workStart < $workEnd) {
+                        if($find) {
+                            $this->addFlash('warning', 'Wpis już istnieje. Został poprawiony.');
+                            //$find->setWorkTime($form->get('work_time')->getData());
+                            $find->setWorkTime($date);
+                            $find->setCostHour($costHour);
+                            $find->setWorkStart($form->get('work_start')->getData());
+                            $find->setWorkEnd($form->get('work_end')->getData());
+                            $find->setTravelTime($form->get('travel_time')->getData());
+                            $em->flush();
+                        } else {
+                            $workTime->setEmploy($us);
+                            $workTime->setCostHour($costHour);
+                            $workTime->setWorkTime($date);
+                            $em->persist($workTime);
+                            $em->flush();
+                            $flash = $wd.' '.$wt->format('%H:%I').', '.$workTime->getProject()->getName().', '.$workTime->getUser()->getFirstName().' '.$workTime->getUser()->getLastName();
+                            $this->addFlash('success', 'Wpis został dodany. '.$flash);
+                        }
                     } else {
-                        $workTime->setEmploy($us);
-                        $workTime->setCostHour($costHour);
-                        $workTime->setWorkTime($date);
-                        $em->persist($workTime);
-                        $em->flush();
-                        $flash = $wd.' '.$wt->format('%H:%I').', '.$workTime->getProject()->getName().', '.$workTime->getUser()->getFirstName().' '.$workTime->getUser()->getLastName();
-                        $this->addFlash('success', 'Wpis został dodany. '.$flash);
+                        $this->addFlash('error', 'Godzina zakończenia musi być większa od godziny rozpoczęcia.');
                     }
                 }
             }
@@ -93,6 +96,8 @@ class WorkTimeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $nextAction = $form->get('remove')->isClicked() ? 'remove': 'edit';
+            if ($nextAction == 'edit') {
             $workStart = new DateTime($form->get('work_start')->getData()->format('H:i'));
             $workEnd = new DateTime($form->get('work_end')->getData()->format('H:i'));
             $wt = $workEnd->diff($workStart);
@@ -102,6 +107,11 @@ class WorkTimeController extends AbstractController
             $em->persist($workTime);
             $em->flush();
             $this->addFlash('success', 'Poprawiono Dane użytkownika');
+        } elseif($nextAction == 'remove') {
+            $em->remove($workTime);
+            $em->flush();
+            $this->addFlash('success', 'Usunięto Wpis');
+        }
             return $this->redirectToRoute('app_work_time');
         }
         
