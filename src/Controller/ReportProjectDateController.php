@@ -11,8 +11,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Doctrine\Persistence\ManagerRegistry;
 class ReportProjectDateController extends AbstractController
 {
+    public function __construct(private ManagerRegistry $doctrine) {}
+
     #[Route('/report/project/date', name: 'app_report_project_date')]
     public function index(Request $request, WorkTimeRepository $workTimeRepository): Response
     {
@@ -22,6 +25,7 @@ class ReportProjectDateController extends AbstractController
         $visibleResult = false;
         $resultDays = array();
         $resultTotal = array();
+        $monthWork = array();
         $form = $this->createForm(ReportProjectDateType::class, $workTime);
         $form->handleRequest($request);
 
@@ -46,6 +50,15 @@ class ReportProjectDateController extends AbstractController
                 $projectName = $workTime->getProject()->getName();
                 return $this->pdfReport($idProject, $dateStart, $dateEnd, $projectName, $workTimeRepository, 2);
             }
+
+            $monthWork = $workTimeRepository->getProjectMonth($idProject, $form->get('work_date_start')->getData()->format('m'), $form->get('work_date_start')->getData()->format('Y'));
+            // $i = 0;
+            // foreach($monthWork['workTime'] as $wtu)
+            // {
+            //     print("<pre>".print_r($monthWork['users'][$i],true)."</pre>");
+            //     print("<pre>".print_r($wtu,true)."</pre>");
+            //     $i++;
+            // }
         }
 
         return $this->render('report_project_date/index.html.twig', [
@@ -54,9 +67,18 @@ class ReportProjectDateController extends AbstractController
             'visibleResult' => $visibleResult,
             'resultReportSum' => $resultSum,
             'resultReportDays' => $resultDays,
-            'resultTotal' => $resultTotal
+            'resultTotal' => $resultTotal,
+            'monthView' => $monthWork
         ]);
     }
+
+    // public function reportMonth($month, $year, $idProject)
+    // {
+    //     $em = $this->doctrine->getManager();
+    //     $users = $em->getRepository(WorkTime::class)->getProjectUserMonthWork($idProject, $month, $year);
+    //     //$users = $workTimeRepository->getProjectUserMonthWork($idProject, $month, $year);
+    //     return $users;
+    // }
 
     #[Route('/report/project/pdf', name: 'app_report_project_pdf')]
     public function pdfReport($idProject, $dateStart, $dateEnd, $projectName, WorkTimeRepository $workTimeRepository, $options)

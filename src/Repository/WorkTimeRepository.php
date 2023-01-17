@@ -16,6 +16,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class WorkTimeRepository extends ServiceEntityRepository
 {
+    public $dayFullName = array('Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota','Niedziela');
+    public $daySuffName = array('Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob','Ndz');
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, WorkTime::class);
@@ -98,6 +101,22 @@ public function getUserDataTotalSum(int $idUser, $dateStart, $dateEnd): array
     return $resultSet->fetchAllAssociative();
 }
 
+/**
+ * @return UserProjectWorkTimeDay [sum_work_time_mat, sum_work_time] Returns an array
+ */
+public function getUserProjectWorkTimeDay($idUser, $idProject, $date)
+{
+    $sql = "SELECT ROUND(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)),2) as sum_work_time_mat,
+    TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time
+         FROM work_time wt 
+         WHERE wt.user_id= :idUser AND wt.project_id= :idProject AND wt.work_date= :dat";
+    $conn = $this->getEntityManager()->getConnection();
+    $stmt = $conn->prepare($sql);
+    $resultSet = $stmt->executeQuery(['idUser' => $idUser, 'idProject' => $idProject, 'dat'=> $date]);
+    // returns an array of arrays (i.e. a raw data set)
+    return $resultSet->fetchAllAssociative()[0];
+}
+
 
 /**
  * @return WorkTimeSumProject [sum_work_time, sum_travel_time, project_id, p.name] Returns an array - employee working time in a given date range, summed up according to projects.
@@ -156,6 +175,53 @@ public function getProjectDataTotalSum(int $idProject, $dateStart, $dateEnd): ar
     $stmt = $conn->prepare($sql);
     $resultSet = $stmt->executeQuery(['idProject' => $idProject, 'dateStart'=> $dateStart, 'dateEnd' => $dateEnd]);
     return $resultSet->fetchAllAssociative();
+}
+/**
+ * @return UserWorkPojectMonth [id_user, first_name, last_name] Returns an array
+ */
+public function getProjectUserMonthWork(int $idProject, int $month, int $year)
+{
+    $sql = "SELECT u.id as id_user, u.first_name, u.last_name FROM work_time wt LEFT JOIN user u ON wt.user_id = u.id 
+    WHERE month(wt.work_date) = :mo AND year(wt.work_date) = :ye AND wt.project_id = :idProject 
+    GROUP BY wt.user_id";
+    $conn = $this->getEntityManager()->getConnection();
+    $stmt = $conn->prepare($sql);
+    $resultSet = $stmt->executeQuery(['idProject' => $idProject, 'mo'=> $month, 'ye' => $year]);
+    return $resultSet->fetchAllAssociative();
+}
+
+public function getProjectMonth(int $idProject, int $month, int $year)
+
+{
+    //$data = array();
+    $usersWork = $this->getProjectUserMonthWork($idProject, $month, $year);
+    $lastDayMonth = date("t", strtotime($year.'-'.$month.'-01'));
+    $iUser = 0;
+    foreach ($usersWork as $userWork)
+    {
+        $data[$userWork['id_user']][0] = $userWork['first_name']. ' '. $userWork['last_name'];
+        $sumWorkTime = 0;
+        for ($iDay = 1; $iDay <= $lastDayMonth; $iDay++)
+        {
+            //$data[$iUser] = $userWork['id_user'];
+            $dat = $year.'-'.$month.'-'.$iDay;
+            $dayWeek = date("N", strtotime($dat))-1;
+            $dayName['suffName'][$iDay] = $this->daySuffName[$dayWeek];
+            $dayName['fullName'][$iDay] = $this->dayFullName[$dayWeek];
+            $dayName['numDayWeek'][$iDay] = $dayWeek;
+            $workTimeDay = $this->getUserProjectWorkTimeDay($userWork['id_user'], $idProject, $dat);
+            if (floatval($workTimeDay['sum_work_time_mat']) == 0) {$workTime = '';} else {$workTime = floatval($workTimeDay['sum_work_time_mat']);}
+            $sumWorkTime = $sumWorkTime + floatval($workTimeDay['sum_work_time_mat']);
+            $data[$userWork['id_user']][$iDay] = $workTime;
+        }
+        $data[$userWork['id_user']][$iDay+1] = $sumWorkTime;
+        $iUser++;
+    }
+    $res['users'] = $usersWork;
+    $res['workTime'] = $data;
+    $res['lastDayMonth'] = $lastDayMonth;
+    $res['day'] = $dayName;
+    return $res;
 }
 
 /**

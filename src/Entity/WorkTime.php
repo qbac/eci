@@ -162,8 +162,14 @@ class WorkTime
     */
     public function validate(ExecutionContextInterface $context, $payload)
     {
-        if ($this->work_start > $this->work_end) {
-            $context->buildViolation('Godzina zakończenia musi być większa od godziny rozpoczęcia')
+        // if ($this->work_start >= $this->work_end) {
+        //     $context->buildViolation('Godzina zakończenia musi być większa od godziny rozpoczęcia')
+        //     ->addViolation();
+        // }
+
+        if ($this->work_end >= $this->work_start)
+        {} else {
+            $context->buildViolation('Godzina zak musi być większa od godziny rozpoczęcia')
             ->addViolation();
         }
     }

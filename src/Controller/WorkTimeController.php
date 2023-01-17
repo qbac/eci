@@ -50,7 +50,7 @@ class WorkTimeController extends AbstractController
                     //$wt->format('%H:%I:%S');
                     $date = new DateTime($wt->format('%H:%I:%S'));
 
-                    if($workStart < $workEnd) {
+                    //if($workStart <= $workEnd) {
                         if($find) {
                             $this->addFlash('warning', 'Wpis już istnieje. Został poprawiony.');
                             //$find->setWorkTime($form->get('work_time')->getData());
@@ -69,9 +69,9 @@ class WorkTimeController extends AbstractController
                             $flash = $wd.' '.$wt->format('%H:%I').', '.$workTime->getProject()->getName().', '.$workTime->getUser()->getFirstName().' '.$workTime->getUser()->getLastName();
                             $this->addFlash('success', 'Wpis został dodany. '.$flash);
                         }
-                    } else {
-                        $this->addFlash('error', 'Godzina zakończenia musi być większa od godziny rozpoczęcia.');
-                    }
+                    //} else {
+                    //    $this->addFlash('error', 'Godzina zakończenia musi być większa od godziny rozpoczęcia.');
+                    //}
                 }
             }
             if ($form->get('work_date')->getData())
