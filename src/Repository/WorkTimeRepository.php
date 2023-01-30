@@ -197,25 +197,39 @@ public function getProjectMonth(int $idProject, int $month, int $year)
     $usersWork = $this->getProjectUserMonthWork($idProject, $month, $year);
     $lastDayMonth = date("t", strtotime($year.'-'.$month.'-01'));
     $iUser = 0;
-    foreach ($usersWork as $userWork)
-    {
-        $data[$userWork['id_user']][0] = $userWork['first_name']. ' '. $userWork['last_name'];
-        $sumWorkTime = 0;
+    $data = array();
+    $dayName = array();
+    if (empty($usersWork)) 
+    { 
         for ($iDay = 1; $iDay <= $lastDayMonth; $iDay++)
         {
-            //$data[$iUser] = $userWork['id_user'];
             $dat = $year.'-'.$month.'-'.$iDay;
             $dayWeek = date("N", strtotime($dat))-1;
             $dayName['suffName'][$iDay] = $this->daySuffName[$dayWeek];
             $dayName['fullName'][$iDay] = $this->dayFullName[$dayWeek];
             $dayName['numDayWeek'][$iDay] = $dayWeek;
-            $workTimeDay = $this->getUserProjectWorkTimeDay($userWork['id_user'], $idProject, $dat);
-            if (floatval($workTimeDay['sum_work_time_mat']) == 0) {$workTime = '';} else {$workTime = floatval($workTimeDay['sum_work_time_mat']);}
-            $sumWorkTime = $sumWorkTime + floatval($workTimeDay['sum_work_time_mat']);
-            $data[$userWork['id_user']][$iDay] = $workTime;
         }
-        $data[$userWork['id_user']][$iDay+1] = $sumWorkTime;
-        $iUser++;
+    } else {
+        foreach ($usersWork as $userWork)
+        {
+            $data[$userWork['id_user']][0] = $userWork['first_name']. ' '. $userWork['last_name'];
+            $sumWorkTime = 0;
+            for ($iDay = 1; $iDay <= $lastDayMonth; $iDay++)
+            {
+                //$data[$iUser] = $userWork['id_user'];
+                $dat = $year.'-'.$month.'-'.$iDay;
+                $dayWeek = date("N", strtotime($dat))-1;
+                $dayName['suffName'][$iDay] = $this->daySuffName[$dayWeek];
+                $dayName['fullName'][$iDay] = $this->dayFullName[$dayWeek];
+                $dayName['numDayWeek'][$iDay] = $dayWeek;
+                $workTimeDay = $this->getUserProjectWorkTimeDay($userWork['id_user'], $idProject, $dat);
+                if (floatval($workTimeDay['sum_work_time_mat']) == 0) {$workTime = '';} else {$workTime = floatval($workTimeDay['sum_work_time_mat']);}
+                $sumWorkTime = $sumWorkTime + floatval($workTimeDay['sum_work_time_mat']);
+                $data[$userWork['id_user']][$iDay] = $workTime;
+            }
+            $data[$userWork['id_user']][$iDay+1] = $sumWorkTime;
+            $iUser++;
+        }
     }
     $res['users'] = $usersWork;
     $res['workTime'] = $data;
