@@ -7,7 +7,7 @@
     <style>
       body {
         font-family: DejaVu Sans;
-        font-size: 10px;
+        font-size: 8px;
       }
       table {
           border-collapse: collapse;
@@ -67,7 +67,8 @@
             <tr>
               <th>Projekt</th>
               <th>Suma przepracowanych godzin</th>
-              <th>Koszt</th>
+              <th>Suma czasu dojazdu</th>
+              <th>Koszt pracy</th>
             </tr>
           </thead>
           <tbody>
@@ -75,12 +76,14 @@
           <tr>
               <td>{{rowResultSum.name}}</td>
               <td>{{rowResultSum.sum_work_time}}</td>
+              <td>{{rowResultSum.sum_travel_time}}</td>
               <td>{{rowResultSum.sum_cost}}</td>
             </tr>
           {% endfor %}
           <tr>
               <td><strong>RAZEM</strong></td>
               <td><strong>{{resultTotal.0.total_sum_work_time}}</strong></td>
+              <td><strong>{{resultTotal.0.total_sum_travel_time}}</strong></td>
               <td><strong>{{resultTotal.0.total_sum_cost}}</strong></td>
             </tr>
           </tbody>
@@ -93,7 +96,10 @@
             <tr>
               <th scope="col">Data</th>
               <th scope="col">Projekt</th>
-              <th scope="col">Ilość godzin</th>
+              <th scope="col">Godz. rozp.</th>
+              <th scope="col">Godz. zak.</th>
+              <th scope="col">Czas pracy</th>
+              <th scope="col">Czas doj.</th>
               <th scope="col">Stawka</th>
               <th scope="col">Koszt</th>
             </tr>
@@ -103,7 +109,10 @@
           <tr>
               <td>{{rowResultDay.work_date}}</td>
               <td>{{rowResultDay.name}}</td>
+              <td>{{rowResultDay.work_start}}</td>
+              <td>{{rowResultDay.work_end}}</td>
               <td>{{rowResultDay.work_time}}</td>
+              <td>{{rowResultDay.travel_time}}</td>
               <td>{{rowResultDay.cost_hour}}</td>
               <td>{{rowResultDay.sum_cost}}</td>
             </tr>

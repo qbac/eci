@@ -48,13 +48,14 @@ class WorkTimeRepository extends ServiceEntityRepository
         }
     }
 /**
- * @return WorkTimeSumUser [sum_work_time, project_id, p.name] Returns an array - employee working time in a given date range, summed up according to projects.
+ * @return WorkTimeSumUser [sum_work_time, sum_cost, sum_travel_time, project_id, name] Returns an array - employee working time in a given date range, summed up according to projects.
  */
     public function getUserDataWorkTimeSum(int $idUser, $dateStart, $dateEnd): array
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = "SELECT TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as sum_work_time,
         ROUND(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as sum_cost,
+        TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.travel_time))), '%H:%i') as sum_travel_time,
         wt.project_id, p.name 
              FROM work_time wt 
              LEFT JOIN project p ON (wt.project_id = p.id)
@@ -74,6 +75,9 @@ class WorkTimeRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
         $sql = "SELECT wt.work_date, TIME_FORMAT(wt.work_time, '%H:%i') as work_time,
         ROUND((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour,2) as sum_cost,
+        TIME_FORMAT(wt.work_start, '%H:%i') as work_start, 
+        TIME_FORMAT(wt.work_end, '%H:%i') as work_end, 
+        TIME_FORMAT(wt.travel_time, '%H:%i') as travel_time,
         wt.project_id, p.name, cost_hour
         FROM work_time wt 
         LEFT JOIN project p ON (wt.project_id = p.id)
@@ -91,7 +95,8 @@ class WorkTimeRepository extends ServiceEntityRepository
 public function getUserDataTotalSum(int $idUser, $dateStart, $dateEnd): array
 {
     $sql = "SELECT ROUND(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as total_sum_cost,
-    TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as total_sum_work_time
+    TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC(wt.work_time))), '%H:%i') as total_sum_work_time,
+    CONCAT((SUM(HOUR(wt.travel_time)) + FLOOR(SUM(MINUTE(wt.travel_time))/60)),':', (IF(MOD(SUM(MINUTE(wt.travel_time)),60)=0,'00',MOD(SUM(MINUTE(wt.travel_time)),60)))) as total_sum_travel_time
          FROM work_time wt 
          WHERE wt.user_id= :idUser AND wt.work_date>= :dateStart AND wt.work_date<= :dateEnd";
     $conn = $this->getEntityManager()->getConnection();
@@ -188,6 +193,54 @@ public function getProjectUserMonthWork(int $idProject, int $month, int $year)
     $stmt = $conn->prepare($sql);
     $resultSet = $stmt->executeQuery(['idProject' => $idProject, 'mo'=> $month, 'ye' => $year]);
     return $resultSet->fetchAllAssociative();
+}
+
+/**
+ * @return MonthsYear [month, year] Returns an array number months and year between two dates
+ */
+public function getNumberMonthsTwoDates($startDate, $endDate)
+{
+    // $date1=new \DateTime($endDate);
+    // $date2=new \DateTime($startDate);
+    // $Months = $date2->diff($date1);
+    // $result = (($Months->y) * 12) + ($Months->m);
+
+    $ts1 = strtotime($startDate);
+    $ts2 = strtotime($endDate);
+
+    $year1 = date('Y', $ts1);
+    $year2 = date('Y', $ts2);
+
+    $month1 = date('m', $ts1);
+    $month2 = date('m', $ts2);
+
+    $result = (($year2 - $year1) * 12) + ($month2 - $month1);
+
+    $data[0]['month'] = (int)$month1;
+    $data[0]['year'] = (int)$year1;
+    
+    $month = (int)$month1;
+    $year = (int)$year1;
+    if ($result >= 1)
+    {
+        for ($i = 1; $i<=$result; $i++)
+        {
+            if ($month == 12)
+            {
+                $month = 1;
+                $year = $year + 1;
+            } 
+            else 
+            {
+                $month = $month + 1;
+            }
+
+        $data[$i]['month'] = $month;
+        $data[$i]['year'] = $year;
+        }
+    }
+    //echo $result;
+    return $data;
 }
 
 public function getProjectMonth(int $idProject, int $month, int $year)

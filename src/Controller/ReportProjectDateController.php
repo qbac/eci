@@ -26,6 +26,7 @@ class ReportProjectDateController extends AbstractController
         $resultDays = array();
         $resultTotal = array();
         $monthWork = array();
+        $monthsWork = array();
         $form = $this->createForm(ReportProjectDateType::class, $workTime);
         $form->handleRequest($request);
 
@@ -50,15 +51,16 @@ class ReportProjectDateController extends AbstractController
                 $projectName = $workTime->getProject()->getName();
                 return $this->pdfReport($idProject, $dateStart, $dateEnd, $projectName, $workTimeRepository, 2);
             }
-
+            
+            $numMonths = $workTimeRepository->getNumberMonthsTwoDates($dateStart, $dateEnd);
+            //var_dump($numMonths);
+            $i = 0;
+            foreach ($numMonths as $numMonth)
+            {
+                $monthsWork[$i] = $workTimeRepository->getProjectMonth($idProject, $numMonth['month'], $numMonth['year']);
+                $i++;
+            }
             $monthWork = $workTimeRepository->getProjectMonth($idProject, $form->get('work_date_start')->getData()->format('m'), $form->get('work_date_start')->getData()->format('Y'));
-            // $i = 0;
-            // foreach($monthWork['workTime'] as $wtu)
-            // {
-            //     print("<pre>".print_r($monthWork['users'][$i],true)."</pre>");
-            //     print("<pre>".print_r($wtu,true)."</pre>");
-            //     $i++;
-            // }
         }
 
         return $this->render('report_project_date/index.html.twig', [
@@ -68,7 +70,7 @@ class ReportProjectDateController extends AbstractController
             'resultReportSum' => $resultSum,
             'resultReportDays' => $resultDays,
             'resultTotal' => $resultTotal,
-            'monthView' => $monthWork
+            'monthView' => $monthsWork
         ]);
     }
 
