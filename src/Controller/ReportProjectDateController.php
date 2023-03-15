@@ -130,4 +130,25 @@ class ReportProjectDateController extends AbstractController
 
         //return $this->redirectToRoute('app_report_user_date');
     }
+//API
+
+    //Total working time and costs
+    #[Route('/api/project/sum/{idProject}', name: 'api_project_sum', methods:'GET')]
+    public function getSumProject($idProject, WorkTimeRepository $workTimeRepository): Response
+    {
+        $dateStart = '2020-01-01';
+        $dateEnd = date("Y-m-d");
+        $resultTotal = $workTimeRepository->getProjectDataTotalSum($idProject, $dateStart, $dateEnd);
+        return $this->json($resultTotal);
+    }
+
+    //time of work on the project of individual people
+    #[Route('/api/project/worktimesum/{idProject}', name: 'api_project_work_time_sum', methods:'GET')]
+    public function getWorkTimeSumProject($idProject, WorkTimeRepository $workTimeRepository): Response
+    {
+        $dateStart = '2020-01-01';
+        $dateEnd = date("Y-m-d");
+        $resultTotal = $workTimeRepository->getProjectDataWorkTimeSum($idProject, $dateStart, $dateEnd);
+        return $this->json($resultTotal);
+    }
 }

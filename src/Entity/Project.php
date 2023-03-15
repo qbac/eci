@@ -30,6 +30,12 @@ class Project
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: WorkTime::class)]
     private $workTimes;
 
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private $number_zlec;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $kod_zlec;
+
     public function __construct()
     {
         $this->workTimes = new ArrayCollection();
@@ -114,6 +120,30 @@ class Project
                 $workTime->setProject(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNumberZlec(): ?int
+    {
+        return $this->number_zlec;
+    }
+
+    public function setNumberZlec(?int $number_zlec): self
+    {
+        $this->number_zlec = $number_zlec;
+
+        return $this;
+    }
+
+    public function getKodZlec(): ?string
+    {
+        return $this->kod_zlec;
+    }
+
+    public function setKodZlec(?string $kod_zlec): self
+    {
+        $this->kod_zlec = $kod_zlec;
 
         return $this;
     }
