@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Project;
 use App\Entity\WorkTime;
 use App\Form\ReportProjectDateType;
 use App\Repository\WorkTimeRepository;
@@ -133,13 +134,37 @@ class ReportProjectDateController extends AbstractController
 //API
 
     //Total working time and costs
-    #[Route('/api/project/sum/{idProject}', name: 'api_project_sum', methods:'GET')]
-    public function getSumProject($idProject, WorkTimeRepository $workTimeRepository): Response
+    #[Route('/api/project/sum/{numberZlec}', name: 'api_project_sum', methods:'GET')]
+    public function getSumProject($numberZlec, WorkTimeRepository $workTimeRepository, ManagerRegistry $doctrine): Response
     {
-        $dateStart = '2020-01-01';
-        $dateEnd = date("Y-m-d");
-        $resultTotal = $workTimeRepository->getProjectDataTotalSum($idProject, $dateStart, $dateEnd);
-        return $this->json($resultTotal);
+        if (is_numeric($numberZlec)){
+        $em = $doctrine->getManager();
+        $proj = $em->getRepository(Project::class)->findOneBy(['number_zlec' => $numberZlec]);
+        if(is_null($proj)){
+            $resultTotal[0]['Error'] = 'Nie znaleziono projektu o numerze '.$numberZlec;
+            $resultTotal[0]['name'] = '';
+            $resultTotal[0]['id_project'] = '';
+            $resultTotal[0]['kod_zlec'] = '';
+            $resultTotal[0]['number_zlec'] = $numberZlec;
+            return $this->json($resultTotal);
+        } else {
+            $dateStart = '2020-01-01';
+            $dateEnd = date("Y-m-d");
+            $resultTotal = $workTimeRepository->getProjectDataTotalSum($proj->getId(), $dateStart, $dateEnd);
+            $resultTotal[0]['name'] = $proj->getName();
+            $resultTotal[0]['id_project'] = $proj->getId();
+            $resultTotal[0]['kod_zlec'] = $proj->getKodZlec();
+            $resultTotal[0]['number_zlec'] = $proj->getNumberZlec();
+            return $this->json($resultTotal);
+        }
+        } else {
+            $resultTotal[0]['Error'] = 'Numer zlecenia nie jest cyfrą';
+            $resultTotal[0]['name'] = '';
+            $resultTotal[0]['id_project'] = '';
+            $resultTotal[0]['kod_zlec'] = '';
+            $resultTotal[0]['number_zlec'] = $numberZlec;
+            return $this->json($resultTotal);
+        }
     }
 
     //time of work on the project of individual people

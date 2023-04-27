@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -35,6 +36,13 @@ class ProjectFormType extends AbstractType
                 'label' => 'Aktywny',
                 'required' => false
                 //'attr' => array('checked' => 'checked')
+            ])
+            ->add('numberZlec', NumberType::class, [
+                'label' => 'Numer',
+                'html5' => true
+            ])
+            ->add('kodZlec', TextType::class, [
+                'label' => 'Kod'
             ])
         ;
     }

@@ -170,7 +170,7 @@ public function getProjectDataWorkTime(int $idProject, $dateStart, $dateEnd): ar
  */
 public function getProjectDataTotalSum(int $idProject, $dateStart, $dateEnd): array
 {
-    $sql = "SELECT ROUND(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as total_sum_cost,
+    $sql = "SELECT ROUND(SUM((HOUR(wt.work_time)+MINUTE(wt.work_time)/60)*wt.cost_hour),2) as total_sum_work_cost,
     CONCAT((SUM(HOUR(wt.work_time)) + FLOOR(SUM(MINUTE(wt.work_time))/60)),':',(IF(MOD(SUM(MINUTE(wt.work_time)),60)=0,'00',MOD(SUM(MINUTE(wt.work_time)),60)))) as total_sum_work_time,
     CONCAT((SUM(HOUR(wt.travel_time)) + FLOOR(SUM(MINUTE(wt.travel_time))/60)),':', (IF(MOD(SUM(MINUTE(wt.travel_time)),60)=0,'00',MOD(SUM(MINUTE(wt.travel_time)),60)))) as total_sum_travel_time,
     CONCAT((SUM(HOUR(wt.work_time)) + SUM(HOUR(wt.travel_time)) + FLOOR(SUM(MINUTE(wt.work_time))/60 + SUM(MINUTE(wt.travel_time))/60)),':',(IF(MOD(SUM(MINUTE(wt.work_time)) + SUM(MINUTE(wt.travel_time)),60)=0,'00',MOD(SUM(MINUTE(wt.work_time)) + SUM(MINUTE(wt.travel_time)),60)))) as total_sum_time

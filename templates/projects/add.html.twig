@@ -7,6 +7,8 @@
 
 {% form_theme addProjectForm 'bootstrap_4_layout.html.twig' %}
 {{form_start(addProjectForm)}}
+    {{form_row(addProjectForm.numberZlec)}}
+    {{form_row(addProjectForm.kodZlec)}}
     {{form_row(addProjectForm.name)}}
     {{form_row(addProjectForm.date_start)}}
     {{form_row(addProjectForm.date_end)}}
