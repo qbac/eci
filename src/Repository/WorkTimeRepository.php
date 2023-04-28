@@ -351,6 +351,19 @@ public function getEmployDataTotalSum(int $idEmploy, $dateStart, $dateEnd): arra
     return $resultSet->fetchAllAssociative();
 }
 
+/**
+ *  @return Array [total_sum_cost_travel_time_employ_project, employ_id, project_id] Return an array - the sum of travel costs, taking into account the hourly rate of the person, the method of employment and the project 
+ */
+public function getTravelTimeEmployProject($idEmploy, $idProject)
+{
+    $sql = "select ROUND(SUM((HOUR(wt.travel_time)+MINUTE(wt.travel_time)/60)*wt.cost_hour),2) as total_sum_cost_travel_time_employ_project, wt.employ_id, wt.project_id
+    from work_time wt where wt.employ_id = :idEmploy and wt.project_id = :idProject and wt.travel_time > 0";
+    $conn = $this->getEntityManager()->getConnection();
+    $stmt = $conn->prepare($sql);
+    $resultSet = $stmt->executeQuery(['idEmploy' => $idEmploy, 'idProject'=> $idProject]);
+    // returns an array of arrays (i.e. a raw data set)
+    return $resultSet->fetchAllAssociative();
+}
     // /**
     //  * @return WorkTime[] Returns an array of WorkTime objects
     //  */
