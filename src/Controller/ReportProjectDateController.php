@@ -152,7 +152,9 @@ class ReportProjectDateController extends AbstractController
             $dateEnd = date("Y-m-d");
             $resultTotal = $workTimeRepository->getProjectDataTotalSum($proj->getId(), $dateStart, $dateEnd);
             $resultTravel = $workTimeRepository->getTravelTimeEmployProject(1,$proj->getId());
-            $resultTotal[0]['total_sum_cost_travel_time_employ_project'] = $resultTravel[0]['total_sum_cost_travel_time_employ_project'];
+            $resultEmploy = $workTimeRepository->getProjectEmployDataTotalSum($proj->getId(), 1, $dateStart, $dateEnd);
+            $resultTotal[0]['total_sum_cost_travel_time_employ_elbitech'] = $resultTravel[0]['total_sum_cost_travel_time_employ_project'];
+            $resultTotal[0]['total_sum_cost_employ_elbitech'] = $resultEmploy[0]['total_sum_work_cost'] + $resultTravel[0]['total_sum_cost_travel_time_employ_project'];
             $resultTotal[0]['total_sum_cost'] = $resultTravel[0]['total_sum_cost_travel_time_employ_project'] + $resultTotal[0]['total_sum_work_cost'];
             $resultTotal[0]['name'] = $proj->getName();
             $resultTotal[0]['id_project'] = $proj->getId();

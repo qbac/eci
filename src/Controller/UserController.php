@@ -12,16 +12,21 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Core\Security;
+//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class UserController extends AbstractController
 {
-    #[IsGranted('ROLE_ADMIN',statusCode: 404, message: 'Nie masz dostępu do tej strony')]
+
+    //#[IsGranted('ROLE_ADMIN',statusCode: 403, message: 'Nie masz dostępu do tej strony')]
     #[Route('/user', name: 'app_user')]
     public function index(ManagerRegistry $doctrine, UserRepository $userRepository): Response
     {
+        // if (in_array('ROLE_ADMIN', $this->getUser()->getRoles(), true) || in_array('ROLE_COORDINATOR', $this->getUser()->getRoles(), true)) {
+        //     echo "JEST OK";
+        // } else {echo "BRAK DOSTĘPU";}
+
         if (!$this->getUser()){return $this->redirectToRoute('app_login');}
         $em = $doctrine->getManager();
         //$listUsers = $em->getRepository(User::class)->find(['active' => '1']);
