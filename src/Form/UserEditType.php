@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -56,6 +57,14 @@ class UserEditType extends AbstractType
                 'label' => 'Stawka godzinowa',
                 'currency' => 'PLN',
                 'scale' => 2,
+                'required' => false
+            ])
+            ->add('comments', TextareaType::class, [
+                'label' => 'Uwagi',
+                'required' => false
+            ])
+            ->add('phone', TextType::class, [
+                'label' => 'Numer telefonu',
                 'required' => false
             ])
             ->add('active', CheckboxType::class, [

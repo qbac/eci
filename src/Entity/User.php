@@ -44,6 +44,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
     private $costHour;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private $comments;
+
+    #[ORM\Column(type: 'string', length: 15, nullable: true)]
+    private $phone;
+
     public function __construct()
     {
         $this->workTimes = new ArrayCollection();
@@ -205,6 +211,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCostHour(?string $costHour): self
     {
         $this->costHour = $costHour;
+
+        return $this;
+    }
+
+    public function getComments(): ?string
+    {
+        return $this->comments;
+    }
+
+    public function setComments(?string $comments): self
+    {
+        $this->comments = $comments;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
 
         return $this;
     }

@@ -95,7 +95,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute('app_user');
         }
         return $this->render('user/edit.html.twig', [
-            'controller_name' => 'Edytuj Użytkownika',
+            'controller_name' => 'Edytuj dane pracownika',
             'editUserForm' => $form->createView()
         ]);
     }
