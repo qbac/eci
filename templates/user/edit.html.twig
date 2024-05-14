@@ -7,16 +7,43 @@
 
 {% form_theme editUserForm 'bootstrap_4_layout.html.twig' %}
 {{form_start(editUserForm)}}
-    {{form_row(editUserForm.first_name)}}
-    {{form_row(editUserForm.last_name)}}
-    {{form_row(editUserForm.email)}}
-    {{form_row(editUserForm.phone)}}
-    {{form_row(editUserForm.plainPassword)}}
-    {{form_row(editUserForm.employ)}}
-    {{form_row(editUserForm.cost_hour)}}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            {{form_row(editUserForm.first_name)}}
+        </div>
+        <div class="col">
+            {{form_row(editUserForm.last_name)}}
+        </div>
+    </div>
+    <div class="row">
+            <div class="col-4">
+                {{form_row(editUserForm.email)}}
+            </div>
+             <div class="col-4">
+                {{form_row(editUserForm.phone)}}
+            </div>
+            <div class="col-4">
+                {{form_row(editUserForm.erp_num_mag)}}
+            </div>
+    </div>
+        <div class="row">
+            <div class="col-4">
+                {{form_row(editUserForm.plainPassword)}}
+            </div>
+    </div>
+        <div class="row">
+            <div class="col-4">
+                {{form_row(editUserForm.employ)}}
+            </div>
+             <div class="col-4">
+                {{form_row(editUserForm.cost_hour)}}
+            </div>
+    </div>
     {{form_row(editUserForm.comments)}}
     {{form_row(editUserForm.active)}}
     <button type="submit" class="btn btn-primary mt-3">Popraw</button>
+</div>
 {{form_end(editUserForm)}}
 
 {% endblock %}

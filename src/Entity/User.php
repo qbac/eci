@@ -50,9 +50,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 15, nullable: true)]
     private $phone;
 
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private $erp_num_mag;
+
+    #[ORM\OneToMany(mappedBy: 'id_user', targetEntity: UserQualification::class)]
+    private $userQualifications;
+
     public function __construct()
     {
         $this->workTimes = new ArrayCollection();
+        $this->userQualifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -235,6 +242,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhone(?string $phone): self
     {
         $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getErpNumMag(): ?int
+    {
+        return $this->erp_num_mag;
+    }
+
+    public function setErpNumMag(?int $erp_num_mag): self
+    {
+        $this->erp_num_mag = $erp_num_mag;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserQualification>
+     */
+    public function getUserQualifications(): Collection
+    {
+        return $this->userQualifications;
+    }
+
+    public function addUserQualification(UserQualification $userQualification): self
+    {
+        if (!$this->userQualifications->contains($userQualification)) {
+            $this->userQualifications[] = $userQualification;
+            $userQualification->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserQualification(UserQualification $userQualification): self
+    {
+        if ($this->userQualifications->removeElement($userQualification)) {
+            // set the owning side to null (unless already changed)
+            if ($userQualification->getUser() === $this) {
+                $userQualification->setUser(null);
+            }
+        }
 
         return $this;
     }

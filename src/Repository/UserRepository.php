@@ -67,17 +67,38 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function getActiveUser()
     {
-        $sql = "SELECT u.id, u.first_name as FirstName, u.last_name as LastName, u.email, 
-        (SELECT MAX(wt2.work_date) FROM work_time wt2 WHERE wt2.user_id = u.id) as maxWorkDate, 
-        (select p3.name from work_time wt3 LEFT JOIN project p3 ON wt3.project_id = p3.id where wt3.user_id = u.id order by wt3.work_date desc limit 1) as projectName,
-        e.name as EmployName, u.cost_hour as costHour
-        FROM user u 
-        LEFT JOIN work_time wt ON u.id = wt.user_id
-        LEFT JOIN employ e ON u.employ_id = e.id
-        LEFT JOIN project p ON wt.project_id = p.id
-        where u.active=1 
-        AND u.email <> 'admin@elbitech.pl'
-        GROUP BY u.id";
+        $sql = "SELECT 
+        u.id,
+        u.first_name as FirstName,
+        u.last_name as LastName,
+        u.email,
+        maxDates.maxWorkDate,
+        wt.id as maxWorkID,
+        p.name as projectName,
+        wt.work_time as workTime,
+        e.name as EmployName,
+        u.cost_hour as costHour
+    FROM 
+        user u 
+    LEFT JOIN 
+        (
+            SELECT 
+                user_id,
+                MAX(work_date) as maxWorkDate
+            FROM 
+                work_time
+            GROUP BY 
+                user_id
+        ) maxDates ON u.id = maxDates.user_id
+    LEFT JOIN 
+        work_time wt ON u.id = wt.user_id AND maxDates.maxWorkDate = wt.work_date
+    LEFT JOIN 
+        employ e ON wt.employ_id = e.id 
+    LEFT JOIN 
+        project p ON wt.project_id = p.id 
+    WHERE 
+        u.active = 1 
+        AND u.email <> 'admin@elbitech.pl'";
     $conn = $this->getEntityManager()->getConnection();
     $stmt = $conn->prepare($sql);
     $resultSet = $stmt->executeQuery();

@@ -21,6 +21,7 @@
               <th scope="col">Stawka godzinowa</th>
               <th scope="col">Ostatnio pracował</th>
               <th scope="col">Ostatni projekt</th>
+              <th scope="col">Karta</th>
               <th scope="col">Edycja</th>
             </tr>
           </thead>
@@ -39,7 +40,13 @@
               {% endif %} 
               <td>{{listUser.projectName}}</td>
               <td>
-              <a class="btn btn-primary" href={{path('app_user_edit',{'id' : listUser.id})}}>
+              <a class="btn btn-primary" title="Karta pracownika" href={{path('app_user_edit',{'id' : listUser.id})}}>
+              <span data-feather="user"></span>
+              
+            </a>
+              </td>
+              <td>
+              <a class="btn btn-primary" title="Edytuj" href={{path('app_user_edit',{'id' : listUser.id})}}>
               <span data-feather="edit"></span>
               
             </a>

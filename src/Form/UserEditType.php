@@ -67,6 +67,10 @@ class UserEditType extends AbstractType
                 'label' => 'Numer telefonu',
                 'required' => false
             ])
+            ->add('erp_num_mag', NumberType::class, [
+                'label' => 'Numer magazynu w ERP',
+                'required' => false
+            ])
             ->add('active', CheckboxType::class, [
                 'label' => 'Aktywny',
                 'required' => false
