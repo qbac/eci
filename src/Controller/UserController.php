@@ -100,6 +100,17 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/user/card/{id}', name: 'app_user_card')]
+    public function cardUser(User $user, EntityManagerInterface $em)
+    {
+        if (!$this->getUser()){return $this->redirectToRoute('app_login');}
+        $userDoctrine = $em->getRepository(User::class)->find($user->getId());
+        return $this->render('user/cardUser.html.twig', [
+            'controller_name' => 'Karta pracownika',
+            'user' => $userDoctrine,
+        ]);
+    }
+
     public function transliteratePolishLower($text)
     {
     $alias = mb_strtolower($text,"UTF-8");

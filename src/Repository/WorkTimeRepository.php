@@ -307,6 +307,8 @@ public function getProjectMonth(int $idProject, int $month, int $year)
     $res['workTime'] = $data;
     $res['lastDayMonth'] = $lastDayMonth;
     $res['day'] = $dayName;
+    $res['month'] = $month;
+    $res['year'] = $year;
     return $res;
 }
 

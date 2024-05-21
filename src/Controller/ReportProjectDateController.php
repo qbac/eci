@@ -65,7 +65,7 @@ class ReportProjectDateController extends AbstractController
         }
 
         return $this->render('report_project_date/index.html.twig', [
-            'controller_name' => 'ReportProjectDateController',
+            'controller_name' => 'Raport - czas pracy według Projektu',
             'reportProjectDateForm' => $form->createView(),
             'visibleResult' => $visibleResult,
             'resultReportSum' => $resultSum,
