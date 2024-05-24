@@ -12,6 +12,7 @@
             <link href="{{ asset('assets/css/dashboard.css') }}" rel="stylesheet">
             <link href="{{ asset('assets/css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
             <link href="{{ asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet">
+            <link rel="icon" type="image/jpg" href="{{ asset('favicon.webp') }}" />
                 <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -75,13 +76,21 @@
               Pracownicy
             </a>
           </li>
-          {% endif %}
+      
           <li class="nav-item">
           <a class="nav-link" href={{path("app_employ")}}>
               <span data-feather="briefcase"></span>
               Sposób zatrudnienia
             </a>
           </li>
+
+          <li class="nav-item">
+          <a class="nav-link" href={{path("app_qualification")}}>
+              <span data-feather="credit-card"></span>
+              Kwalifikacje
+            </a>
+          </li>
+          {% endif %}
           <ul class="nav-item mt-3">
           <span data-feather="layers"></span>
           Raporty
