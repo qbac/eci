@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 use App\Entity\User;
+use App\Entity\UserQualification;
 use App\Form\AddWorkerType;
 use App\Form\UserEditType;
 use App\Repository\UserRepository;
@@ -105,9 +106,11 @@ class UserController extends AbstractController
     {
         if (!$this->getUser()){return $this->redirectToRoute('app_login');}
         $userDoctrine = $em->getRepository(User::class)->find($user->getId());
+        $userQualifications = $em->getRepository(UserQualification::class)->findBy(['user' => $user->getId()]);
         return $this->render('user/cardUser.html.twig', [
             'controller_name' => 'Karta pracownika',
             'user' => $userDoctrine,
+            'qualifications' => $userQualifications
         ]);
     }
 

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{controller_name}}{% endblock %}
+
+{% block body %}
+<h1>{{ controller_name }} dla {{ userQualification.getUser.getFirstName }} {{ userQualification.getUser.getLastName }}</h1>
+
+{% form_theme userQualificationForm 'bootstrap_4_layout.html.twig' %}
+{{form_start(userQualificationForm)}}
+    {{form_row(userQualificationForm.qualification)}}
+    {{form_row(userQualificationForm.type)}}
+    {{form_row(userQualificationForm.date_start)}}
+    {{form_row(userQualificationForm.date_end)}}
+    {{form_row(userQualificationForm.link)}}
+    {{form_widget(userQualificationForm.active)}}
+    <button type="submit" class="btn btn-primary mt-3">Popraw</button>
+    <button type="submit" class="btn btn-danger mt-3">Usuń</button>
+{{form_end(userQualificationForm)}}
+
+{% endblock %}

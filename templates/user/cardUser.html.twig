@@ -9,7 +9,7 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="card-title mb-0">{{user.FirstName}} {{user.LastName}}</h2>
-            <a href="{{path('app_user_edit',{'id' : user.getId})}}" class="btn btn-link p-0" onclick="editUser()">
+            <a href="{{path('app_user_edit',{'id' : user.getId})}}" class="btn btn-primary mt-2" title="Edytuj dane pracownika" onclick="editUser()">
                 <i data-feather="edit"></i>
             </a>
         </div>
@@ -22,6 +22,47 @@
             <h5><strong>Uwagi:</strong></h5>
             <p>{{user.Comments}}</p>
         </div>
+    </div>
+
+    <div class="mt-5 card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="card-title mb-0">Kwalifikacje</h2>
+            <a href="{{path('app_user_qualification_add',{'id' : user.getId})}}" class="btn btn-primary mt-2" title="Dodaj nowe kwalifikacje" onclick="editUser()">
+                <i data-feather="plus"></i>
+            </a>
+        </div>
+      <div class="card-body">
+        <div class="table-responsive">
+        <table id="tab" class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Nazwa</th>
+              <th scope="col">Rodzaj</th>
+              <th scope="col">Data od</th>
+              <th scope="col">Data do</th>
+              <th scope="col">Link</th>
+              <th scope="col">Edytuj</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for listQualification in qualifications %}
+          <tr>
+              <td class="col-md-5">{{listQualification.getQualification.getName}}</td>
+              <td class="col-md-4">{{listQualification.Type}}</td>
+              <td class="col-md-1">{{listQualification.DateStart | date('Y-m-d')}}</td>
+              <td class="col-md-1">{{listQualification.DateEnd | date('Y-m-d')}}</td>
+              <td class="col-md-1">{{listQualification.Link}}</td>
+              <td>
+                <a class="btn btn-primary" href={{path('app_user_qualification_edit',{'id' : listQualification.getId})}}>
+                <span data-feather="edit"></span>
+              </a>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      </div>
     </div>
 </div>
 

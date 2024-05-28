@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{controller_name}}{% endblock %}
+
+{% block body %}
+<h1>{{ controller_name }}</h1>
+
+{% form_theme addQualificationForm 'bootstrap_4_layout.html.twig' %}
+{{form_start(addQualificationForm)}}
+    {{form_row(addQualificationForm.name)}}
+    {{form_row(addQualificationForm.remind_days_before)}}
+    {{form_row(addQualificationForm.active)}}
+    <button type="submit" class="btn btn-primary mt-3">Popraw</button>
+{{form_end(addQualificationForm)}}
+
+{% endblock %}
