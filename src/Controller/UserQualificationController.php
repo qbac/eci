@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\UserQualification;
 use App\Form\UserQualificationFormType;
+use ContainerLA1HnHT\getUserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,7 +38,7 @@ class UserQualificationController extends AbstractController
             return $this->redirectToRoute('app_user_card', ['id' => $user->getId()]);
         }
         return $this->render('user_qualification/add.html.twig', [
-            'controller_name' => 'Dodaj Kwalifikacje',
+            'controller_name' => 'Dodaj Kwalifikacje dla ' . $user->getFirstName() . ' ' . $user->getLastName(),
             'user' => $user,
             'addUserQualificationForm' => $form->createView()
         ]);
@@ -51,13 +52,23 @@ class UserQualificationController extends AbstractController
         $form = $this->createForm(UserQualificationFormType::class, $userQualification);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($userQualification);
-            $em->flush();
+            $nextAction = $form->get('remove')->isClicked() ? 'remove': 'edit';
 
+            if ($nextAction == 'edit'){
+                $em->persist($userQualification);
+                $em->flush();
+                $this->addFlash('success', 'Poprawiono Kwalifikacje użytkownika');
+            }
+
+            if ($nextAction == 'remove'){
+                $em->remove($userQualification);
+                $em->flush();
+                $this->addFlash('success', 'Usunięto Wpis');
+            }
             return $this->redirectToRoute('app_user_card', ['id' => $userQualification->getUser()->getId()]);
         }
         return $this->render('user_qualification/edit.html.twig', [
-            'controller_name' => 'Edytuj Kwalifikacje',
+            'controller_name' => 'Edytuj Kwalifikacje dla ' . $userQualification->getUser()->getFirstName() . ' ' . $userQualification->getUser()->getLastName(),
             'userQualification' => $userQualification,
             'userQualificationForm' => $form->createView()
         ]);

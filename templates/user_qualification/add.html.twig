@@ -3,8 +3,7 @@
 {% block title %}{{controller_name}}{% endblock %}
 
 {% block body %}
-<h1>{{ controller_name }} dla {{ user.firstName }} {{ user.lastName }}</h1>
-
+<div class="mt-5">
 {% form_theme addUserQualificationForm 'bootstrap_4_layout.html.twig' %}
 {{form_start(addUserQualificationForm)}}
     {{form_row(addUserQualificationForm.qualification)}}
@@ -12,10 +11,12 @@
     {{form_row(addUserQualificationForm.date_start)}}
     {{form_row(addUserQualificationForm.date_end)}}
     {{form_row(addUserQualificationForm.link)}}
-    <div class="invisible">
-    {{form_widget(addUserQualificationForm.active, {'attr' : {'checked' : 'checked'}})}}
-    </div>
     <button type="submit" class="btn btn-primary mt-3">Dodaj</button>
+    <div class="invisible">
+    {{form_row(addUserQualificationForm.active, {'attr' : {'checked' : 'checked'}})}}
+    {{form_widget(addUserQualificationForm.edit)}}
+    {{form_widget(addUserQualificationForm.remove)}}
+    </div>
 {{form_end(addUserQualificationForm)}}
-
+</div>
 {% endblock %}

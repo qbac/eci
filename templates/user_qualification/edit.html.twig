@@ -3,8 +3,7 @@
 {% block title %}{{controller_name}}{% endblock %}
 
 {% block body %}
-<h1>{{ controller_name }} dla {{ userQualification.getUser.getFirstName }} {{ userQualification.getUser.getLastName }}</h1>
-
+<div class="mt-5">
 {% form_theme userQualificationForm 'bootstrap_4_layout.html.twig' %}
 {{form_start(userQualificationForm)}}
     {{form_row(userQualificationForm.qualification)}}
@@ -12,9 +11,11 @@
     {{form_row(userQualificationForm.date_start)}}
     {{form_row(userQualificationForm.date_end)}}
     {{form_row(userQualificationForm.link)}}
-    {{form_widget(userQualificationForm.active)}}
-    <button type="submit" class="btn btn-primary mt-3">Popraw</button>
-    <button type="submit" class="btn btn-danger mt-3">Usuń</button>
+    {{form_widget(userQualificationForm.edit)}}
+    {{form_widget(userQualificationForm.remove)}}
+        <div class="invisible">
+    {{form_row(userQualificationForm.active)}}
+    </div>
 {{form_end(userQualificationForm)}}
-
+</div>
 {% endblock %}
