@@ -50,7 +50,11 @@
               <td class="col-md-4">{{listQualification.Type}}</td>
               <td class="col-md-1">{{listQualification.DateStart | date('Y-m-d')}}</td>
               <td class="col-md-1">{{listQualification.DateEnd | date('Y-m-d')}}</td>
-              <td class="col-md-1">{{listQualification.Link}}</td>
+              <td class="col-md-1">
+              {% if listQualification.Link %}
+              <a href="{{listQualification.Link}}" target="_blank" rel="noopener noreferrer">LINK</a>
+              {% endif %}
+              </td>
               <td>
                 <a class="btn btn-primary" href={{path('app_user_qualification_edit',{'id' : listQualification.getId})}}>
                 <span data-feather="edit"></span>
