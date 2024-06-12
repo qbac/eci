@@ -4,6 +4,8 @@
 
 {% block body %}
 <div class="mt-5">
+<div class="card">
+<div class="card-body">
 {% form_theme userQualificationForm 'bootstrap_4_layout.html.twig' %}
 {{form_start(userQualificationForm)}}
     {{form_row(userQualificationForm.qualification)}}
@@ -11,11 +13,39 @@
     {{form_row(userQualificationForm.date_start)}}
     {{form_row(userQualificationForm.date_end)}}
     {{form_row(userQualificationForm.link)}}
-    {{form_widget(userQualificationForm.edit)}}
-    {{form_widget(userQualificationForm.remove)}}
-        <div class="invisible">
+    {% if userQualification.getFileName %}
+    
+    <div class="card mt-5">
+        <div class="card-header">
+            {{userQualification.getFileName}}
+        </div>
+        <div class="card-body">
+        <div class="btn-group" role="group">
+
+            <a href="{{path('app_user_qualification_download',{'id' : userQualification.getId})}}" class="btn btn-primary">POBIERZ PLIK</a>
+
+
+            <a href="{{path('app_user_qualification_removefile',{'id' : userQualification.getId})}}" class="btn btn-danger">USUŃ PLIK</a>
+
+            {{ form_widget(userQualificationForm.fileName, { 'attr': {'class': 'btn btn-warning'} }) }}
+
+        </div>
+        </div>
+    </div>
+    {% else %}
+    <div class = "mt-2">
+    {{form_row(userQualificationForm.fileName, { 'attr': {'class': 'btn btn-primary'} })}}
+    </div>
+    {% endif %}
+    <div class="invisible">
     {{form_row(userQualificationForm.active)}}
     </div>
+    </div>
+    <div class="card-footer pb-3">
+    {{form_widget(userQualificationForm.edit)}}
+    {{form_widget(userQualificationForm.remove)}}
+    </div>
 {{form_end(userQualificationForm)}}
+</div>
 </div>
 {% endblock %}

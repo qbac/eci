@@ -36,6 +36,12 @@ class UserQualification
     #[ORM\Column(type: 'boolean')]
     private $active;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $fileName;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private $uploaded_at;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -121,6 +127,30 @@ class UserQualification
     public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getFileName(): ?string
+    {
+        return $this->fileName;
+    }
+
+    public function setFileName(?string $fileName): self
+    {
+        $this->fileName = $fileName;
+
+        return $this;
+    }
+
+    public function getUploadedAt(): ?\DateTimeImmutable
+    {
+        return $this->uploaded_at;
+    }
+
+    public function setUploadedAt(?\DateTimeImmutable $uploaded_at): self
+    {
+        $this->uploaded_at = $uploaded_at;
 
         return $this;
     }
