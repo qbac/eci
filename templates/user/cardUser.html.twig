@@ -40,19 +40,31 @@
               <th scope="col">Data od</th>
               <th scope="col">Data do</th>
               <th scope="col">Link</th>
+              <th scope="col">Plik</th>
               <th scope="col">Edytuj</th>
             </tr>
           </thead>
           <tbody>
           {% for listQualification in qualifications %}
           <tr>
+              {% set remindDaysBefore = listQualification.getQualification.getRemindDaysBefore %}
+              {% set reminderDate = listQualification.DateEnd|date_modify("-" ~ remindDaysBefore ~ " days") %}
               <td class="col-md-5">{{listQualification.getQualification.getName}}</td>
-              <td class="col-md-4">{{listQualification.Type}}</td>
+              <td class="col-md-3">{{listQualification.Type}}</td>
               <td class="col-md-1">{{listQualification.DateStart | date('Y-m-d')}}</td>
-              <td class="col-md-1">{{listQualification.DateEnd | date('Y-m-d')}}</td>
+              {% if "now"|date('U') >= reminderDate|date('U')%}
+                <td class="col-md-1 text-danger"><strong>{{listQualification.DateEnd | date('Y-m-d')}}</strong></td>
+              {% else %}
+                <td class="col-md-1">{{listQualification.DateEnd | date('Y-m-d')}}</td>
+              {% endif %} 
               <td class="col-md-1">
               {% if listQualification.Link %}
-              <a href="{{listQualification.Link}}" target="_blank" rel="noopener noreferrer">LINK</a>
+              <a href="{{listQualification.Link}}" target="_blank" rel="noopener noreferrer" class="btn btn-success"><span data-feather="external-link"></span></a>
+              {% endif %}
+              </td>
+              <td class="col-md-1">
+              {% if listQualification.fileName %}
+              <a href="{{path('app_user_qualification_download',{'id' : listQualification.getId})}}" target="_blank" rel="noopener noreferrer" class="btn btn-success"><span data-feather="download"></span></a>
               {% endif %}
               </td>
               <td>

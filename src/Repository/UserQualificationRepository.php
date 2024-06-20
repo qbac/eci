@@ -45,6 +45,31 @@ class UserQualificationRepository extends ServiceEntityRepository
         }
     }
 
+    public function remaindBefore(): array
+    {
+        $sql = "SELECT 
+        u.first_name,
+        u.last_name,
+        q.name as name_qualification,
+        uq.date_start,
+        uq.date_end,
+        uq.type
+    FROM 
+        user_qualification uq
+    LEFT JOIN qualification q ON uq.qualification_id = q.id
+    LEFT JOIN user u ON uq.user_id = u.id
+    WHERE 
+        DATE_SUB(uq.date_end, INTERVAL q.remind_days_before DAY) = CURDATE()
+        OR DATE_SUB(uq.date_end, INTERVAL q.remind_days_before / 2 DAY) = CURDATE()
+        OR DATE_SUB(uq.date_end, INTERVAL 1 DAY) = CURDATE()
+        OR uq.date_end = CURDATE()";
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery();
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
+
     // /**
     //  * @return UserQualification[] Returns an array of UserQualification objects
     //  */

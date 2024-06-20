@@ -93,7 +93,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     LEFT JOIN 
         work_time wt ON u.id = wt.user_id AND maxDates.maxWorkDate = wt.work_date
     LEFT JOIN 
-        employ e ON wt.employ_id = e.id 
+        employ e ON u.employ_id = e.id 
     LEFT JOIN 
         project p ON wt.project_id = p.id 
     WHERE 

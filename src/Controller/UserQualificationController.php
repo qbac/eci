@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\UserQualification;
 use App\Form\UserQualificationFormType;
+use App\Repository\UserQualificationRepository;
 use ContainerLA1HnHT\getUserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,6 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+
+use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 
 class UserQualificationController extends AbstractController
 {
@@ -81,7 +84,7 @@ class UserQualificationController extends AbstractController
                         //delete polish character, and change large letters to small
                         $safeFileName = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFileName);
                         $newFileName = $safeFileName . '-' . uniqid() . '.' . $pictureFileName->guessExtension();
-                        $pictureFileName->move('upload/qualification', $newFileName);
+                        $pictureFileName->move('upload/qualification/', $newFileName);
                         $existingUserQualification->setFileName($newFileName);
                         $existingUserQualification->setUploadedAt(new \DateTimeImmutable());
                         
@@ -103,14 +106,15 @@ class UserQualificationController extends AbstractController
                 $em->persist($existingUserQualification);
                 $em->flush();
                 $this->addFlash('success', 'Poprawiono Kwalifikacje użytkownika.');
+                return $this->redirectToRoute('app_user_card', ['id' => $existingUserQualification->getUser()->getId()]);
             }
 
             if ($nextAction == 'remove'){
                 $em->remove($existingUserQualification);
                 $em->flush();
                 $this->addFlash('success', 'Usunięto Wpis');
+                return $this->redirectToRoute('app_user_card', ['id' => $existingUserQualification->getUser()->getId()]);
             }
-            //return $this->redirectToRoute('app_user_card', ['id' => $userQualification->getUser()->getId()]);
         }
 
         return $this->render('user_qualification/edit.html.twig', [
@@ -124,7 +128,7 @@ class UserQualificationController extends AbstractController
     public function UserQualificationDownload(UserQualification $userQualification, Request $request, EntityManagerInterface $em): Response
     {
         if (!$this->getUser()){return $this->redirectToRoute('app_login');}
-        $response = new BinaryFileResponse('upload/qualification/' . $userQualification->getFileName());
+        $response = new BinaryFileResponse($this->getParameter('app.path.file.qualification') . $userQualification->getFileName());
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$userQualification->getFileName());
         return $response;
     }
@@ -142,5 +146,12 @@ class UserQualificationController extends AbstractController
         $em->flush();
         $this->addFlash('success', 'Usunięto plik ' . $fileName);
         return $this->redirectToRoute('app_user_qualification_edit', ['id' => $userQualification->getId()]);
+    }
+
+    #[Route('/api/user/qualification/remaindbefore', name: 'api_user_qualification_remaindbefore', methods:'GET')]
+    public function RemaindUserQualification(UserQualificationRepository $userQualificationRepository): Response
+    {
+        $resultTotal = $userQualificationRepository->remaindBefore();
+        return $this->json($resultTotal);
     }
 }
