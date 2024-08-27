@@ -47,7 +47,7 @@
           <tbody>
           {% for listQualification in qualifications %}
           <tr>
-              {% set remindDaysBefore = listQualification.getQualification.getRemindDaysBefore %}
+              {% set remindDaysBefore = listQualification.getQualification.getRemindDaysBefore is not null and listQualification.getQualification.getRemindDaysBefore != '' ? listQualification.getQualification.getRemindDaysBefore : 0 %}
               {% set reminderDate = listQualification.DateEnd|date_modify("-" ~ remindDaysBefore ~ " days") %}
               <td class="col-md-5">{{listQualification.getQualification.getName}}</td>
               <td class="col-md-3">{{listQualification.Type}}</td>

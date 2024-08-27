@@ -59,13 +59,41 @@ class UserQualificationRepository extends ServiceEntityRepository
     LEFT JOIN qualification q ON uq.qualification_id = q.id
     LEFT JOIN user u ON uq.user_id = u.id
     WHERE 
-        DATE_SUB(uq.date_end, INTERVAL q.remind_days_before DAY) = CURDATE()
+        (DATE_SUB(uq.date_end, INTERVAL q.remind_days_before DAY) = CURDATE()
         OR DATE_SUB(uq.date_end, INTERVAL q.remind_days_before / 2 DAY) = CURDATE()
         OR DATE_SUB(uq.date_end, INTERVAL 1 DAY) = CURDATE()
-        OR uq.date_end = CURDATE()";
+        OR uq.date_end = CURDATE())
+        AND q.remind_days_before IS NOT NULL";
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);
         $resultSet = $stmt->executeQuery();
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
+
+    public function remaindBeforeUser($idUser): array
+    {
+        $sql = "SELECT 
+        u.first_name,
+        u.last_name,
+        q.name as name_qualification,
+        uq.date_start,
+        uq.date_end,
+        uq.type
+    FROM 
+        user_qualification uq
+    LEFT JOIN qualification q ON uq.qualification_id = q.id
+    LEFT JOIN user u ON uq.user_id = u.id
+    WHERE 
+        (DATE_SUB(uq.date_end, INTERVAL q.remind_days_before DAY) = CURDATE()
+        OR DATE_SUB(uq.date_end, INTERVAL q.remind_days_before / 2 DAY) = CURDATE()
+        OR DATE_SUB(uq.date_end, INTERVAL 1 DAY) = CURDATE()
+        OR uq.date_end = CURDATE())
+        AND q.remind_days_before IS NOT NULL
+        AND u.id = :idUser";
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(['idUser' => $idUser]);
         // returns an array of arrays (i.e. a raw data set)
         return $resultSet->fetchAllAssociative();
     }

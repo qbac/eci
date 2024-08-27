@@ -148,6 +148,8 @@ class UserQualificationController extends AbstractController
         return $this->redirectToRoute('app_user_qualification_edit', ['id' => $userQualification->getId()]);
     }
 
+
+ // API   
     #[Route('/api/user/qualification/remaindbefore', name: 'api_user_qualification_remaindbefore', methods:'GET')]
     public function RemaindUserQualification(UserQualificationRepository $userQualificationRepository): Response
     {
